@@ -1,0 +1,64 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>{% block titulo %}Bilouro{% endblock titulo %}</title>
+{% block meta %}
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<meta name="keywords" content="" />
+	<meta name="description" content="" />
+{% endblock meta %}
+
+{% block style %}
+
+{% endblock style %}
+	<link href="/media/css/style.css" rel="stylesheet" type="text/css" />
+	<link href="/media/css/screen.css" rel="stylesheet" type="text/css" />
+{% block scripts %}
+{% endblock scripts %}
+
+{% block extrascripts %}
+{% endblock extrascripts %}
+</head>
+<body>
+<div id="outer">
+	<div id="header">
+		<br>
+		<img src="/media/images/logo.png"/>
+		<h2>{% block h2 %}{% endblock %}</h2>
+	</div>
+	<div id="menu">
+		<ul>
+			{% if user.is_authenticated %}
+				<li><a href="/cadastro">Home</a></li>
+				<li><a href="/cadastro/sair">Sair</a></li>
+			{% else %}
+				<li><a href="/cadastro/entrar">Entrar</a></li>
+			{% endif %}
+	    </ul>
+	</div>
+	<div id="content">
+		<div id="tertiaryContent">
+			{% block direita %}
+			<div align="center"><h2>Coluna direita</h2></div>
+			{% endblock direita %}
+			<div class="xbg"></div>
+		</div>
+		<div id="primaryContentContainer">
+			<div id="primaryContent">
+				{% block conteudo %}{% endblock conteudo %}
+			</div>			
+		</div>
+		<div id="secondaryContent">
+			{% block esquerda %}
+			<div align="center"><h2>Coluna esquerda</h2></div>
+			{% endblock esquerda %}
+			<div class="xbg"></div>
+		</div>
+		<div class="clear"></div>
+	</div>
+	<div id="footer">
+		<p>Copyright &copy; 2010 Bilouro.com</p>
+	</div>
+</div>
+</body>
+</html>

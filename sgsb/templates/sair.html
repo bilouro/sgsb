@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+
+{% block titulo %}Voc&ecirc;  saiu do sistema - {{ block.super }}{% endblock %}
+{% block h2 %}Voc&ecirc;  saiu do sistema{% endblock %}
+
+{% block esquerda %}{% endblock %}
+{% block direita %}{% endblock %}
+{% block conteudo %}{{ block.super }}
+Voce saiu do sistema. Obrigado e volte sempre!
+{% endblock conteudo %}
