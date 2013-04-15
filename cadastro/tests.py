@@ -40,7 +40,7 @@ class DataBaseTest(TestCase):
         self.f.save()
 
         self.u = User()
-        self.u.username = "bilouro"
+        self.u.username = "test_user"
         self.u.save()
 
     def test_Cliente(self):
