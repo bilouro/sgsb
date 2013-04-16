@@ -1,10 +1,3 @@
-"""
-This file demonstrates writing tests using the unittest module. These will pass
-when you run "manage.py test".
-
-Replace this with more appropriate tests for your application.
-"""
-
 import datetime
 from django.test import TestCase
 from django.contrib.auth.models import User
@@ -97,3 +90,4 @@ class DataBaseTest(TestCase):
         self.assertTrue(up.perfil_cliente== new.perfil_cliente, "UserProfile.save() don't working" )
         self.assertTrue(up.perfil_funcionario == new.perfil_funcionario, "UserProfile.save() don't working" )
         self.assertTrue(up.user == new.user, "UserProfile.save() don't working" )
+
