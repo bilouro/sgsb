@@ -29,9 +29,10 @@ class DependenteFuncionarioAdmin(admin.ModelAdmin):
     #ordering = ('-dia',)
     list_filter = ['funcionario',]
 
-class DependenteFuncionarioInline(admin.StackedInline):
+class DependenteFuncionarioInline(admin.TabularInline):
     model = DependenteFuncionario
     fk_name = 'funcionario'
+    exclude = ('endereco', 'telefone', 'email',)
     extra = 0
 class EspecialidadeFuncionarioInline(admin.TabularInline):
     model = EspecialidadeFuncionario
