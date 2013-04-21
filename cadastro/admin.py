@@ -38,12 +38,12 @@ class EspecialidadeFuncionarioInline(admin.TabularInline):
     model = EspecialidadeFuncionario
     extra = 1
 class FuncionarioAdmin(admin.ModelAdmin):
-    list_display = ('nome', 'endereco', 'telefone', 'email', 'cpf', 'identidade', 'orgao_expedidor', 'data_nascimento', 'data_admissao', 'status')
+    list_display = ('nome', 'endereco', 'telefone', 'email', 'cpf', 'identidade', 'orgao_expedidor', 'data_nascimento', 'data_admissao', 'status', 'cargo')
     date_hierarchy = 'data_admissao'
-    search_fields = ['nome', 'endereco', 'telefone', 'email', 'cpf', 'identidade', 'orgao_expedidor', ] #,'turma__nome', 'palavras_chave']
+    search_fields = ['nome', 'endereco', 'telefone', 'email', 'cpf', 'identidade', 'orgao_expedidor' ] #,'turma__nome', 'palavras_chave']
     #ordering = ('-dia',)
     inlines = [ DependenteFuncionarioInline, EspecialidadeFuncionarioInline]
-    list_filter = ['status',]
+    list_filter = ['status','cargo']
 
 class UserProfileAdmin(admin.ModelAdmin):
     list_display = ('user','perfil_cliente', 'perfil_funcionario')
