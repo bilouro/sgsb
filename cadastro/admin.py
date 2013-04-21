@@ -87,6 +87,36 @@ class EspecialidadeFuncionarioAdmin(admin.ModelAdmin):
     #ordering = ('-dia',)
     list_filter = ['especialidade','funcionario']
 
+
+class ServicosPacoteInline(admin.TabularInline):
+    model = ServicoPacoteServico
+    #fk_name = 'pacote_servico'
+    #exclude = ('endereco', 'telefone', 'email',)
+    extra = 3
+class PacoteServicoAdmin(admin.ModelAdmin):
+    list_display = ('nome', 'descricao', 'valor', 'habilitado')
+    search_fields = ['nome', 'descricao', 'valor']
+    #ordering = ('-dia',)
+    inlines = [ ServicosPacoteInline, ]
+    list_filter = ['habilitado']
+
+class ServicoAdmin(admin.ModelAdmin):
+    list_display = ('nome', 'descricao', 'valor', 'comissao', 'custo_material', 'especialidade', 'habilitado')
+    search_fields = ['nome', 'descricao', 'valor', 'comissao', 'custo_material']
+    #ordering = ('-dia',)
+    list_filter = ['especialidade','habilitado']
+
+class ServicoPacoteServicoAdmin(admin.ModelAdmin):
+    list_display = ('pacote_servico', 'servico', 'valor_rateado')
+    search_fields = ['pacote_servico__nome', 'servico__nome', 'valor_rateado']
+    #ordering = ('-dia',)
+    list_filter = ['pacote_servico',]
+
+
+admin.site.register(Servico, ServicoAdmin)
+admin.site.register(PacoteServico, PacoteServicoAdmin)
+admin.site.register(ServicoPacoteServico, ServicoPacoteServicoAdmin)
+
 admin.site.register(StatusCliente, StatusClienteAdmin)
 admin.site.register(StatusFuncionario, StatusFuncionarioAdmin)
 admin.site.register(Cargo, CargoAdmin)

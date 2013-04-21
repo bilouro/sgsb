@@ -36,6 +36,37 @@ class DataBaseTest(TestCase):
         self.u.username = "test_user"
         self.u.save()
 
+        self.e = Especialidade(descricao="manicure")
+        self.e.save()
+
+
+        self.s = Servico()
+        self.s.nome = "corte teste"
+        self.s.descricao = "corte teste"
+        self.s.valor = 50
+        self.s.comissao = 30
+        self.s.custo_material = 2
+        self.s.especialidade = self.e
+        self.s.habilitado = True
+        self.s.save()
+
+        self.s2 = Servico()
+        self.s2.nome = "servico2"
+        self.s2.descricao = "servico2"
+        self.s2.valor = 50
+        self.s2.comissao = 30
+        self.s2.custo_material = 2
+        self.s2.especialidade = self.e
+        self.s2.habilitado = True
+        self.s2.save()
+
+        self.ps = PacoteServico()
+        self.ps.nome = "pacote teste"
+        self.ps.descricao = "pacote teste"
+        self.ps.valor = 80
+        self.ps.habilitado = True
+        self.ps.save()
+
     def test_Cliente(self):
         """
         test for Model.save()
@@ -91,3 +122,68 @@ class DataBaseTest(TestCase):
         self.assertTrue(up.perfil_funcionario == new.perfil_funcionario, "UserProfile.save() don't working" )
         self.assertTrue(up.user == new.user, "UserProfile.save() don't working" )
 
+    def test_servico(self):
+        """
+        test for Model.save()
+        """
+        e = Especialidade(descricao="manicure")
+        e.save()
+
+        s = Servico()
+        s.nome = "corte teste"
+        s.descricao = "corte teste"
+        s.valor = 50
+        s.comissao = 30
+        s.custo_material = 2
+        s.especialidade = e
+        s.habilitado = True
+
+        s.save()
+        new = Servico.objects.get(id = s.id)
+        self.assertTrue(s.nome == new.nome, "servico.save() don't working" )
+        self.assertTrue(s.valor == new.valor, "servico.save() don't working" )
+        self.assertTrue(s.especialidade == new.especialidade, "servico.save() don't working" )
+
+    def test_pacoteservico(self):
+        """
+        test for Model.save()
+        """
+        ps = PacoteServico()
+        ps.nome = "pacote teste"
+        ps.descricao = "pacote teste"
+        ps.valor = 80
+        ps.habilitado = True
+        ps.save()
+
+        new = PacoteServico.objects.get(id = ps.id)
+        self.assertTrue(ps.nome == new.nome, "servico.save() don't working" )
+        self.assertTrue(ps.valor == new.valor, "servico.save() don't working" )
+
+    def test_servicoPacoteServico(self):
+        """
+        test for Model.save()
+        """
+        sps = ServicoPacoteServico()
+        sps.servico = self.s
+        sps.pacote_servico = self.ps
+        sps.valor_rateado = 40
+        sps.save()
+
+        new = ServicoPacoteServico.objects.get(id = sps.id)
+        self.assertTrue(sps.servico == new.servico, "ServicoPacoteServico.save() don't working" )
+        self.assertTrue(sps.pacote_servico == new.pacote_servico, "ServicoPacoteServico.save() don't working" )
+        self.assertTrue(sps.valor_rateado == new.valor_rateado, "ServicoPacoteServico.save() don't working" )
+
+        sps2 = ServicoPacoteServico()
+        sps2.servico = self.s2
+        sps2.pacote_servico = self.ps
+        sps2.valor_rateado = 40
+        sps2.save()
+
+        new = ServicoPacoteServico.objects.get(id = sps2.id)
+        self.assertTrue(sps2.servico == new.servico, "ServicoPacoteServico.save() don't working" )
+        self.assertTrue(sps2.pacote_servico == new.pacote_servico, "ServicoPacoteServico.save() don't working" )
+        self.assertTrue(sps2.valor_rateado == new.valor_rateado, "ServicoPacoteServico.save() don't working" )
+
+        sps_list = ServicoPacoteServico.objects.filter(pacote_servico = self.ps)
+        self.assertGreaterEqual(len(sps_list),2, "ServicoPacoteServico.save() don't working")

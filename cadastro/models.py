@@ -190,6 +190,68 @@ class EspecialidadeFuncionario(models.Model):
     def get_absolute_url(self, return_type=None):
         return generic_get_absolute_url(self, return_type)
 
+
+class Servico(models.Model):
+    """
+    Armazena os servicos realizados no salao
+    """
+    class Meta:
+        verbose_name = 'Servico'
+        verbose_name_plural = 'Servicos'
+
+    nome = models.CharField(max_length=100)
+    descricao = models.TextField()
+    valor = models.DecimalField(max_digits=7,decimal_places=2)
+    comissao = models.DecimalField(max_digits=5,decimal_places=2)
+    custo_material = models.DecimalField(max_digits=7,decimal_places=2)
+    especialidade = models.ForeignKey(Especialidade)
+    habilitado = models.BooleanField()
+
+    def __unicode__(self):
+        return self.nome
+
+    def get_absolute_url(self, return_type=None):
+        return generic_get_absolute_url(self, return_type)
+
+class PacoteServico(models.Model):
+    """
+    Armazena os pacotes de servicos exintes no salao
+    """
+    class Meta:
+        verbose_name = 'Pacote Servico'
+        verbose_name_plural = 'Pacotes de Servicos'
+
+    nome = models.CharField(max_length=100)
+    descricao = models.TextField()
+    valor = models.DecimalField(max_digits=7,decimal_places=2)
+    habilitado = models.BooleanField()
+
+
+    def __unicode__(self):
+        return self.nome
+
+    def get_absolute_url(self, return_type=None):
+        return generic_get_absolute_url(self, return_type)
+
+class ServicoPacoteServico(models.Model):
+    """
+    Armazena os servicos contidos em cada pacote de servico
+    """
+    class Meta:
+        verbose_name = 'Servico Contido em pacote'
+        verbose_name_plural = 'Servicos Contidos em pacotes'
+
+    pacote_servico = models.ForeignKey(PacoteServico, related_name = "pacote_servico_id")
+    servico = models.ForeignKey(Servico)
+    valor_rateado = models.DecimalField(max_digits=7,decimal_places=2)
+
+    def __unicode__(self):
+        return "%s %s" % (self.pacote_servico.nome, self.servico.nome)
+
+    def get_absolute_url(self, return_type=None):
+        return generic_get_absolute_url(self, return_type)
+
+
 class UserProfile(models.Model):
     """
     Permite buscar pelo usuario logado as classes de negocio ligadas a ele
