@@ -156,8 +156,8 @@ class DataBaseTest(TestCase):
         ps.save()
 
         new = PacoteServico.objects.get(id = ps.id)
-        self.assertTrue(ps.nome == new.nome, "servico.save() don't working" )
-        self.assertTrue(ps.valor == new.valor, "servico.save() don't working" )
+        self.assertTrue(ps.nome == new.nome, "pacoteservico.save() don't working" )
+        self.assertTrue(ps.valor == new.valor, "pacoteservico.save() don't working" )
 
     def test_servicoPacoteServico(self):
         """
