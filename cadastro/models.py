@@ -252,6 +252,103 @@ class ServicoPacoteServico(models.Model):
         return generic_get_absolute_url(self, return_type)
 
 
+class PrestacaoServico(models.Model):
+    """
+    Armazena os prestacoes de servico
+    """
+    class Meta:
+        verbose_name = 'Prestacao Servico'
+        verbose_name_plural = 'Prestacoes de Servicos'
+
+    funcionario = models.ForeignKey(Funcionario)
+    cliente = models.ForeignKey(Cliente, null=True, blank=True)
+    data = models.DateTimeField()
+    valor_servico = models.DecimalField(max_digits=7,decimal_places=2)
+    valor_desconto = models.DecimalField(max_digits=7,decimal_places=2)
+    valor_total = models.DecimalField(max_digits=7,decimal_places=2)
+
+    #todo: escrever unicode de PrestacaoServico
+    #def __unicode__(self):
+    #    return "%s %s" % (self.pacote_servico.nome, self.servico.nome)
+
+    def get_absolute_url(self, return_type=None):
+        return generic_get_absolute_url(self, return_type)
+
+
+class ItemPrestacaoServico(models.Model):
+    """
+    Armazena os itens realizados em uma prestacao de servico
+    """
+    class Meta:
+        verbose_name = 'Item Prestacao Servico'
+        verbose_name_plural = 'Itens Prestacao de Servico'
+
+    prestacao_servico = models.ForeignKey(PrestacaoServico)
+    servico = models.ForeignKey(Servico, null=True, blank=True)
+    servico_pacoteservico = models.ForeignKey(ServicoPacoteServico, null=True, blank=True)
+    valor = models.DecimalField(max_digits=7,decimal_places=2)
+
+    #todo: escrever unicode de ItemPrestacaoServico
+    #def __unicode__(self):
+    #    return "%s %s" % (self.pacote_servico.nome, self.servico.nome)
+
+    def get_absolute_url(self, return_type=None):
+        return generic_get_absolute_url(self, return_type)
+
+
+class StatusAgendamento(models.Model):
+    """
+    Armazena os possiveis status dos Agendamentos.
+
+    +-----------+-----------+---------------+-------------+
+    | status    + realizado +   agendado    +  cancelado  |
+    +-----------+-----------+---------------+-------------+
+    | realizado +    true   +    false      +    false    |
+    | cancelado +    false  +    false      +    true     |
+    +-----------+-----------+---------------+-------------+
+    Um item deve ser exibido para agendamento caso:
+      - a) nao tenha agendamento, ou;
+      - b) tenha um agendamento "realizado=false E Cancelado=true"
+    """
+    class Meta:
+        verbose_name = 'Status Agendamento'
+        verbose_name_plural = 'Status Agendamento'
+
+    codigo_negocio = models.CharField(max_length=5)
+    descricao = models.CharField(max_length=60)
+    realizado = models.BooleanField()
+    cancelado = models.BooleanField()
+
+    def __unicode__(self):
+        return self.descricao
+
+    def get_absolute_url(self, return_type=None):
+        return generic_get_absolute_url(self, return_type)
+
+class Agendamento(models.Model):
+    """
+    Armazena os itens realizados em uma prestacao de servico
+    """
+    class Meta:
+        verbose_name = 'Agendamento Servico'
+        verbose_name_plural = 'Agendamentos Servicos'
+
+    status = models.ForeignKey(StatusAgendamento)
+    recepcionista = models.ForeignKey(Funcionario, related_name = "recepcionista")
+    prestador_servico = models.ForeignKey(Funcionario, related_name = "prestador")
+    cliente = models.ForeignKey(Cliente)
+    servico = models.ForeignKey(Servico)
+    servico_pacoteservico = models.ForeignKey(ServicoPacoteServico)
+    item_prestacaoservico = models.ForeignKey(ItemPrestacaoServico)
+
+    #todo: escrever unicode de ItemPrestacaoServico
+    #def __unicode__(self):
+    #    return "%s %s" % (self.pacote_servico.nome, self.servico.nome)
+
+    def get_absolute_url(self, return_type=None):
+        return generic_get_absolute_url(self, return_type)
+
+
 class UserProfile(models.Model):
     """
     Permite buscar pelo usuario logado as classes de negocio ligadas a ele
