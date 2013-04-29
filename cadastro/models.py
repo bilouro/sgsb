@@ -251,50 +251,59 @@ class ServicoPacoteServico(models.Model):
     def get_absolute_url(self, return_type=None):
         return generic_get_absolute_url(self, return_type)
 
-
-class PrestacaoServico(models.Model):
+class HorariosDisponiveis(models.Model):
     """
-    Armazena os prestacoes de servico
+    Armazena os horarios disponiveis para marcacao
     """
     class Meta:
-        verbose_name = 'Prestacao Servico'
-        verbose_name_plural = 'Prestacoes de Servicos'
+        verbose_name = 'Horario Disponivel
+        verbose_name_plural = 'Horarios Disponiveis'
+        ordering = ["hora"]
 
-    funcionario = models.ForeignKey(Funcionario)
-    cliente = models.ForeignKey(Cliente, null=True, blank=True)
-    data = models.DateTimeField()
-    valor_servico = models.DecimalField(max_digits=7,decimal_places=2)
-    valor_desconto = models.DecimalField(max_digits=7,decimal_places=2)
-    valor_total = models.DecimalField(max_digits=7,decimal_places=2)
+    hora = models.TimeField()
 
-    #todo: escrever unicode de PrestacaoServico
-    #def __unicode__(self):
+    #def __unicode__(self): #todo: escrever o unicode de horariosdisponiveis
     #    return "%s %s" % (self.pacote_servico.nome, self.servico.nome)
 
     def get_absolute_url(self, return_type=None):
         return generic_get_absolute_url(self, return_type)
 
-
-class ItemPrestacaoServico(models.Model):
+class StatusHorariosDisponiveis(models.Model):
     """
-    Armazena os itens realizados em uma prestacao de servico
+    Armazena os status dos horarios disponiveis
     """
     class Meta:
-        verbose_name = 'Item Prestacao Servico'
-        verbose_name_plural = 'Itens Prestacao de Servico'
+        verbose_name = 'Status Horario Disponivel
+        verbose_name_plural = 'Status Horarios Disponiveis'
 
-    prestacao_servico = models.ForeignKey(PrestacaoServico)
-    servico = models.ForeignKey(Servico, null=True, blank=True)
-    servico_pacoteservico = models.ForeignKey(ServicoPacoteServico, null=True, blank=True)
-    valor = models.DecimalField(max_digits=7,decimal_places=2)
+    descricao = models.CharField(max_length=60)
 
-    #todo: escrever unicode de ItemPrestacaoServico
-    #def __unicode__(self):
-    #    return "%s %s" % (self.pacote_servico.nome, self.servico.nome)
+    def __unicode__(self):
+        return self.descricao
 
     def get_absolute_url(self, return_type=None):
         return generic_get_absolute_url(self, return_type)
 
+
+class HorariosDisponiveisFuncionario(models.Model):
+    """
+    Armazena os horarios disponiveis para marcacao
+    """
+    class Meta:
+        verbose_name = 'Horario Disponivel Funcionario
+        verbose_name_plural = 'Horarios Disponiveis Funcionarios'
+        ordering = ["Data", "hora"]
+
+    data = models.DateField()
+    hora = models.TimeField()
+    funcioario = models.ForeignKey(Funcionario)
+    status = models.ForeignKey(StatusHorariosDisponiveis)
+
+    #def __unicode__(self): #todo: escrever o unicode de HorariosDisponiveisFuncionario
+    #    return "%s %s" % (self.pacote_servico.nome, self.servico.nome)
+
+    def get_absolute_url(self, return_type=None):
+        return generic_get_absolute_url(self, return_type)
 
 class StatusAgendamento(models.Model):
     """
@@ -325,23 +334,65 @@ class StatusAgendamento(models.Model):
     def get_absolute_url(self, return_type=None):
         return generic_get_absolute_url(self, return_type)
 
-class Agendamento(models.Model):
+class PrestacaoServico(models.Model):
     """
-    Armazena os itens realizados em uma prestacao de servico
+    Armazena as prestaoes de servicos
     """
     class Meta:
-        verbose_name = 'Agendamento Servico'
-        verbose_name_plural = 'Agendamentos Servicos'
+        verbose_name = 'Prestacao Servico'
+        verbose_name_plural = 'Prestacoes de Servicos'
 
     status = models.ForeignKey(StatusAgendamento)
     recepcionista = models.ForeignKey(Funcionario, related_name = "recepcionista")
     prestador_servico = models.ForeignKey(Funcionario, related_name = "prestador")
+    horario = models.ForeignKey(HorariosDisponiveisFuncionario)
     cliente = models.ForeignKey(Cliente)
     servico = models.ForeignKey(Servico)
     servico_pacoteservico = models.ForeignKey(ServicoPacoteServico)
-    item_prestacaoservico = models.ForeignKey(ItemPrestacaoServico)
+    #pago = models.BooleanField()
+    pagamento = models.ForeignKey('Pagamento', null=True, blank=True)
+
 
     #todo: escrever unicode de ItemPrestacaoServico
+    #def __unicode__(self):
+    #    return "%s %s" % (self.pacote_servico.nome, self.servico.nome)
+
+    def get_absolute_url(self, return_type=None):
+        return generic_get_absolute_url(self, return_type)
+
+
+class FormaPagamento(models.Model):
+    """
+    Armazena os possiveis formas de pagamento.
+
+    """
+    class Meta:
+        verbose_name = 'Forma de Pagamento'
+        verbose_name_plural = 'Formas de Pagamento'
+
+    descricao = models.CharField(max_length=60)
+
+    def __unicode__(self):
+        return self.descricao
+
+    def get_absolute_url(self, return_type=None):
+        return generic_get_absolute_url(self, return_type)
+
+class Pagamento(models.Model):
+    """
+    Armazena os pagamentos realizados
+    """
+    class Meta:
+        verbose_name = 'Pagamento'
+        verbose_name_plural = 'Pagamentos'
+
+    recepcionista = models.ForeignKey(Funcionario, related_name = "recepcionista")
+    cliente = models.ForeignKey(Cliente)
+    data_hora = models.DateTimeField()
+    valor = models.DecimalField(max_digits=7,decimal_places=2)
+    forma_pagamento = models.ForeignKey(FormaPagamento)
+
+    #todo: escrever unicode de Pagamento
     #def __unicode__(self):
     #    return "%s %s" % (self.pacote_servico.nome, self.servico.nome)
 
