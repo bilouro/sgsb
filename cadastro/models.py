@@ -277,6 +277,7 @@ class StatusHorariosDisponiveis(models.Model):
         verbose_name_plural = 'Status Horarios Disponiveis'
 
     descricao = models.CharField(max_length=60)
+    disponivel = models.BooleanField()
 
     def __unicode__(self):
         return self.descricao
