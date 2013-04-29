@@ -305,9 +305,9 @@ class HorariosDisponiveisFuncionario(models.Model):
     def get_absolute_url(self, return_type=None):
         return generic_get_absolute_url(self, return_type)
 
-class StatusAgendamento(models.Model):
+class StatusPrestacaoServico(models.Model):
     """
-    Armazena os possiveis status dos Agendamentos.
+    Armazena os possiveis status da PrestacaoServico.
 
     +-----------+-----------+---------------+-------------+
     | status    + realizado +   agendado    +  cancelado  |
@@ -320,8 +320,8 @@ class StatusAgendamento(models.Model):
       - b) tenha um agendamento "realizado=false E Cancelado=true"
     """
     class Meta:
-        verbose_name = 'Status Agendamento'
-        verbose_name_plural = 'Status Agendamento'
+        verbose_name = 'Status Prestacao Servico'
+        verbose_name_plural = 'Status Prestacao Servico'
 
     codigo_negocio = models.CharField(max_length=5)
     descricao = models.CharField(max_length=60)
