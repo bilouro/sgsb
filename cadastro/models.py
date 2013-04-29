@@ -342,7 +342,7 @@ class PrestacaoServico(models.Model):
         verbose_name = 'Prestacao Servico'
         verbose_name_plural = 'Prestacoes de Servicos'
 
-    status = models.ForeignKey(StatusAgendamento)
+    status = models.ForeignKey(StatusPrestacaoServico)
     recepcionista = models.ForeignKey(Funcionario, related_name = "recepcionista")
     prestador_servico = models.ForeignKey(Funcionario, related_name = "prestador")
     horario = models.ForeignKey(HorariosDisponiveisFuncionario)
