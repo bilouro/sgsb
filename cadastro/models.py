@@ -295,8 +295,8 @@ class HorariosDisponiveisFuncionario(models.Model):
         ordering = ["Data", "hora"]
 
     data = models.DateField()
-    hora = models.TimeField()
-    funcioario = models.ForeignKey(Funcionario)
+    hora = models.ForeignKey(HorariosDisponiveis)
+    funcionario = models.ForeignKey(Funcionario)
     status = models.ForeignKey(StatusHorariosDisponiveis)
 
     #def __unicode__(self): #todo: escrever o unicode de HorariosDisponiveisFuncionario
