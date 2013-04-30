@@ -251,7 +251,7 @@ class ServicoPacoteServico(models.Model):
     def get_absolute_url(self, return_type=None):
         return generic_get_absolute_url(self, return_type)
 
-class HorariosDisponiveis(models.Model):
+class HorarioDisponivel(models.Model):
     """
     Armazena os horarios disponiveis para marcacao
     """
@@ -268,25 +268,7 @@ class HorariosDisponiveis(models.Model):
     def get_absolute_url(self, return_type=None):
         return generic_get_absolute_url(self, return_type)
 
-class StatusHorariosDisponiveis(models.Model):
-    """
-    Armazena os status dos horarios disponiveis
-    """
-    class Meta:
-        verbose_name = 'Status Horario Disponivel
-        verbose_name_plural = 'Status Horarios Disponiveis'
-
-    descricao = models.CharField(max_length=60)
-    disponivel = models.BooleanField()
-
-    def __unicode__(self):
-        return self.descricao
-
-    def get_absolute_url(self, return_type=None):
-        return generic_get_absolute_url(self, return_type)
-
-
-class HorariosDisponiveisFuncionario(models.Model):
+class HorarioDisponivelFuncionario(models.Model):
     """
     Armazena os horarios disponiveis para marcacao
     """
@@ -296,11 +278,11 @@ class HorariosDisponiveisFuncionario(models.Model):
         ordering = ["Data", "hora"]
 
     data = models.DateField()
-    hora = models.ForeignKey(HorariosDisponiveis)
+    hora = models.ForeignKey(HorarioDisponivel)
     funcionario = models.ForeignKey(Funcionario)
-    status = models.ForeignKey(StatusHorariosDisponiveis)
+    disponivel = models.BooleanField()
 
-    #def __unicode__(self): #todo: escrever o unicode de HorariosDisponiveisFuncionario
+    #def __unicode__(self): #todo: escrever o unicode de HorarioDisponivelFuncionario
     #    return "%s %s" % (self.pacote_servico.nome, self.servico.nome)
 
     def get_absolute_url(self, return_type=None):
@@ -324,13 +306,54 @@ class StatusPrestacaoServico(models.Model):
         verbose_name = 'Status Prestacao Servico'
         verbose_name_plural = 'Status Prestacao Servico'
 
-    codigo_negocio = models.CharField(max_length=5)
+    descricao_curta = models.CharField(max_length=20)
     descricao = models.CharField(max_length=60)
     realizado = models.BooleanField()
     cancelado = models.BooleanField()
 
     def __unicode__(self):
         return self.descricao
+
+    def get_absolute_url(self, return_type=None):
+        return generic_get_absolute_url(self, return_type)
+
+class PacoteServicoCliente(models.Model):
+    """
+    Armazena os pacotes de servico comprados pelo cliente
+    """
+    class Meta:
+        verbose_name = 'Pacote Sevico Cliente'
+        verbose_name_plural = 'Pacotes Sevico Clientes'
+
+    cliente = models.ForeignKey(Cliente)
+    recepcionista = models.ForeignKey(Funcionario, related_name = "recepcionista")
+    pacote_servico = models.ForeignKey(PacoteServico)
+    pagamento = models.ForeignKey('Pagamento', null=True, blank=True)
+
+    #todo: escrever unicode de PacoteServicoCliente
+    #def __unicode__(self):
+    #    return "%s %s" % (self.pacote_servico.nome, self.servico.nome)
+
+    def get_absolute_url(self, return_type=None):
+        return generic_get_absolute_url(self, return_type)
+
+class PrestacaoServicoPacote(models.Model):
+    """
+    Armazena as prestaoes de servicos
+    """
+    class Meta:
+        verbose_name = 'Prestacao Servico'
+        verbose_name_plural = 'Prestacoes de Servicos'
+
+    status = models.ForeignKey(StatusPrestacaoServico)
+    horario = models.ForeignKey(HorarioDisponivelFuncionario)
+    recepcionista = models.ForeignKey(Funcionario, related_name = "recepcionista")
+    servico_pacoteservico = models.ForeignKey(ServicoPacoteServico)
+    pacoteServico_cliente = models.ForeignKey(PacoteServicoCliente)
+
+    #todo: escrever unicode de ItemPrestacaoServico
+    #def __unicode__(self):
+    #    return "%s %s" % (self.pacote_servico.nome, self.servico.nome)
 
     def get_absolute_url(self, return_type=None):
         return generic_get_absolute_url(self, return_type)
@@ -344,13 +367,11 @@ class PrestacaoServico(models.Model):
         verbose_name_plural = 'Prestacoes de Servicos'
 
     status = models.ForeignKey(StatusPrestacaoServico)
+    horario = models.ForeignKey(HorarioDisponivelFuncionario)
+
     recepcionista = models.ForeignKey(Funcionario, related_name = "recepcionista")
-    prestador_servico = models.ForeignKey(Funcionario, related_name = "prestador")
-    horario = models.ForeignKey(HorariosDisponiveisFuncionario)
     cliente = models.ForeignKey(Cliente)
     servico = models.ForeignKey(Servico)
-    servico_pacoteservico = models.ForeignKey(ServicoPacoteServico)
-    #pago = models.BooleanField()
     pagamento = models.ForeignKey('Pagamento', null=True, blank=True)
 
 
@@ -372,6 +393,7 @@ class FormaPagamento(models.Model):
         verbose_name_plural = 'Formas de Pagamento'
 
     descricao = models.CharField(max_length=60)
+    max_parcelas = models.PositiveSmallIntegerField()
 
     def __unicode__(self):
         return self.descricao
@@ -392,6 +414,7 @@ class Pagamento(models.Model):
     data_hora = models.DateTimeField()
     valor = models.DecimalField(max_digits=7,decimal_places=2)
     forma_pagamento = models.ForeignKey(FormaPagamento)
+    parcelas = models.PositiveIntegerField()
 
     #todo: escrever unicode de Pagamento
     #def __unicode__(self):
