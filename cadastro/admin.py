@@ -16,6 +16,11 @@ class ClienteAdmin(admin.ModelAdmin):
     list_filter = ['status',]
 
 class PessoaAdmin(admin.ModelAdmin):
+    fieldsets = (
+        ('Dados Pessoais', {
+            'fields': ('nome', 'endereco', ('telefone', 'email'), ('cpf', 'identidade', 'orgao_expedidor'), 'data_nascimento')
+        }),
+    )
     list_display = ('nome', 'endereco', 'telefone', 'email', 'cpf', 'identidade', 'orgao_expedidor', 'data_nascimento')
     date_hierarchy = 'data_nascimento'
     search_fields = ['nome', 'endereco', 'telefone', 'email', 'cpf', 'identidade', 'orgao_expedidor', ] #,'turma__nome', 'palavras_chave']
@@ -122,7 +127,7 @@ class HorarioDisponivelFuncionarioAdmin(admin.ModelAdmin):
     list_display = ('data', 'hora', 'funcionario', 'disponivel')
     search_fields = ['funcionario__nome']
     #ordering = ('-dia',)
-    list_filter = ['funcionario', 'disponivel',]
+    list_filter = ['funcionario', 'disponivel','hora__hora']
     date_hierarchy = 'data'
 
 
@@ -140,12 +145,47 @@ class PacoteServicoClienteAdmin(admin.ModelAdmin):
 
 class PrestacaoServicoPacoteAdmin(admin.ModelAdmin):
     list_display = ('status', 'horario', 'recepcionista', 'servico_pacoteservico', 'pacoteServico_cliente')
-    search_fields = ['horario', 'servico_pacoteservico', 'pacoteServico_cliente']
+    search_fields = ['horario__funcionario__nome', 'servico_pacoteservico__servico__nome', 'pacoteServico_cliente__pacote_servico__nome', 'pacoteServico_cliente__cliente__nome']
     #ordering = ('-dia',)
-    #date_hierarchy = 'horario__data'
+    #date_hierarchy = 'horario'
     list_filter = ['status']
 
+class PrestacaoServicoAdmin(admin.ModelAdmin):
+    list_display = ('status', 'horario', 'recepcionista', 'cliente', 'servico', 'pagamento')
+    search_fields = ['horario__funcionario__nome', 'cliente__nome', 'servico__nome']
+    list_filter = ['status']
 
+class PrestacaoServicoAdmin(admin.ModelAdmin):
+    list_display = ('status', 'horario', 'recepcionista', 'cliente', 'servico', 'pagamento')
+    search_fields = ['horario__funcionario__nome', 'cliente__nome', 'servico__nome']
+    list_filter = ['status']
+
+class FormaPagamentoAdmin(admin.ModelAdmin):
+    list_display = ('descricao',)
+    search_fields = ['descricao',]
+
+
+class PrestacaoServicoInline(admin.TabularInline):
+    model = PrestacaoServico
+    #fk_name = 'funcionario'
+    exclude = ('status', 'horario', 'recepcionista','cliente')
+    extra = 0
+class PacoteServicoClienteInline(admin.TabularInline):
+    model = PacoteServicoCliente
+    exclude = ('cliente', 'recepcionista')
+    extra = 0
+
+class PagamentoAdmin(admin.ModelAdmin):
+    list_display = ('cliente', 'data_hora', 'valor', 'forma_pagamento')
+    search_fields = ['cliente__nome','valor', 'forma_pagamento__descricao']
+    #ordering = ('-dia',)
+    date_hierarchy = 'data_hora'
+    list_filter = ['cliente','forma_pagamento']
+    inlines = [PacoteServicoClienteInline, PrestacaoServicoInline]
+
+admin.site.register(Pagamento, PagamentoAdmin)
+admin.site.register(FormaPagamento, FormaPagamentoAdmin)
+admin.site.register(PrestacaoServico, PrestacaoServicoAdmin)
 admin.site.register(PrestacaoServicoPacote, PrestacaoServicoPacoteAdmin)
 admin.site.register(PacoteServicoCliente, PacoteServicoClienteAdmin)
 admin.site.register(StatusPrestacaoServico, StatusPrestacaoServicoAdmin)
