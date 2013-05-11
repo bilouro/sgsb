@@ -113,6 +113,44 @@ class ServicoPacoteServicoAdmin(admin.ModelAdmin):
     list_filter = ['pacote_servico',]
 
 
+class HorarioDisponivelAdmin(admin.ModelAdmin):
+    list_display = ('hora', )
+    #ordering = ('-dia',)
+    #list_filter = ['pacote_servico',]
+
+class HorarioDisponivelFuncionarioAdmin(admin.ModelAdmin):
+    list_display = ('data', 'hora', 'funcionario', 'disponivel')
+    search_fields = ['funcionario__nome']
+    #ordering = ('-dia',)
+    list_filter = ['funcionario', 'disponivel',]
+    date_hierarchy = 'data'
+
+
+class StatusPrestacaoServicoAdmin(admin.ModelAdmin):
+    list_display = ('descricao_curta', 'descricao', 'realizado', 'cancelado')
+    search_fields = ['descricao_curta', 'descricao',]
+    #ordering = ('-dia',)
+    list_filter = ['realizado', 'cancelado']
+
+class PacoteServicoClienteAdmin(admin.ModelAdmin):
+    list_display = ('cliente', 'recepcionista', 'pacote_servico', 'pagamento')
+    search_fields = ['cliente__nome', 'recepcionista__nome', 'pacote_servico__descricao', 'pacote_servico__nome']
+    #ordering = ('-dia',)
+    list_filter = ['cliente',]
+
+class PrestacaoServicoPacoteAdmin(admin.ModelAdmin):
+    list_display = ('status', 'horario', 'recepcionista', 'servico_pacoteservico', 'pacoteServico_cliente')
+    search_fields = ['horario', 'servico_pacoteservico', 'pacoteServico_cliente']
+    #ordering = ('-dia',)
+    #date_hierarchy = 'horario__data'
+    list_filter = ['status']
+
+
+admin.site.register(PrestacaoServicoPacote, PrestacaoServicoPacoteAdmin)
+admin.site.register(PacoteServicoCliente, PacoteServicoClienteAdmin)
+admin.site.register(StatusPrestacaoServico, StatusPrestacaoServicoAdmin)
+admin.site.register(HorarioDisponivelFuncionario, HorarioDisponivelFuncionarioAdmin)
+admin.site.register(HorarioDisponivel, HorarioDisponivelAdmin)
 admin.site.register(Servico, ServicoAdmin)
 admin.site.register(PacoteServico, PacoteServicoAdmin)
 admin.site.register(ServicoPacoteServico, ServicoPacoteServicoAdmin)

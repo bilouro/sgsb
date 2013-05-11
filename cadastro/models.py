@@ -256,14 +256,14 @@ class HorarioDisponivel(models.Model):
     Armazena os horarios disponiveis para marcacao
     """
     class Meta:
-        verbose_name = 'Horario Disponivel
+        verbose_name = 'Horario Disponivel'
         verbose_name_plural = 'Horarios Disponiveis'
         ordering = ["hora"]
 
     hora = models.TimeField()
 
-    #def __unicode__(self): #todo: escrever o unicode de horariosdisponiveis
-    #    return "%s %s" % (self.pacote_servico.nome, self.servico.nome)
+    def __unicode__(self):
+        return self.hora.strftime('%H:%M')
 
     def get_absolute_url(self, return_type=None):
         return generic_get_absolute_url(self, return_type)
@@ -273,17 +273,17 @@ class HorarioDisponivelFuncionario(models.Model):
     Armazena os horarios disponiveis para marcacao
     """
     class Meta:
-        verbose_name = 'Horario Disponivel Funcionario
+        verbose_name = 'Horario Disponivel Funcionario'
         verbose_name_plural = 'Horarios Disponiveis Funcionarios'
-        ordering = ["Data", "hora"]
+        ordering = ["data", "hora"]
 
     data = models.DateField()
     hora = models.ForeignKey(HorarioDisponivel)
     funcionario = models.ForeignKey(Funcionario)
     disponivel = models.BooleanField()
 
-    #def __unicode__(self): #todo: escrever o unicode de HorarioDisponivelFuncionario
-    #    return "%s %s" % (self.pacote_servico.nome, self.servico.nome)
+    def __unicode__(self):
+        return "%s %s %s" % (self.data.strftime("%d/%m/%Y"), self.funcionario.nome, self.hora.hora.strftime('%H:%M'))
 
     def get_absolute_url(self, return_type=None):
         return generic_get_absolute_url(self, return_type)
@@ -326,13 +326,12 @@ class PacoteServicoCliente(models.Model):
         verbose_name_plural = 'Pacotes Sevico Clientes'
 
     cliente = models.ForeignKey(Cliente)
-    recepcionista = models.ForeignKey(Funcionario, related_name = "recepcionista")
+    recepcionista = models.ForeignKey(Funcionario)
     pacote_servico = models.ForeignKey(PacoteServico)
     pagamento = models.ForeignKey('Pagamento', null=True, blank=True)
 
-    #todo: escrever unicode de PacoteServicoCliente
-    #def __unicode__(self):
-    #    return "%s %s" % (self.pacote_servico.nome, self.servico.nome)
+    def __unicode__(self):
+        return "%s - %s" % (self.cliente.nome, self.pacote_servico.nome)
 
     def get_absolute_url(self, return_type=None):
         return generic_get_absolute_url(self, return_type)
@@ -347,13 +346,12 @@ class PrestacaoServicoPacote(models.Model):
 
     status = models.ForeignKey(StatusPrestacaoServico)
     horario = models.ForeignKey(HorarioDisponivelFuncionario)
-    recepcionista = models.ForeignKey(Funcionario, related_name = "recepcionista")
+    recepcionista = models.ForeignKey(Funcionario)
     servico_pacoteservico = models.ForeignKey(ServicoPacoteServico)
     pacoteServico_cliente = models.ForeignKey(PacoteServicoCliente)
 
-    #todo: escrever unicode de ItemPrestacaoServico
-    #def __unicode__(self):
-    #    return "%s %s" % (self.pacote_servico.nome, self.servico.nome)
+    def __unicode__(self):
+        return "%s %s" % (self.servico_pacoteservico.servico.nome, self.pacoteServico_cliente)
 
     def get_absolute_url(self, return_type=None):
         return generic_get_absolute_url(self, return_type)
@@ -369,15 +367,13 @@ class PrestacaoServico(models.Model):
     status = models.ForeignKey(StatusPrestacaoServico)
     horario = models.ForeignKey(HorarioDisponivelFuncionario)
 
-    recepcionista = models.ForeignKey(Funcionario, related_name = "recepcionista")
+    recepcionista = models.ForeignKey(Funcionario)
     cliente = models.ForeignKey(Cliente)
     servico = models.ForeignKey(Servico)
     pagamento = models.ForeignKey('Pagamento', null=True, blank=True)
 
-
-    #todo: escrever unicode de ItemPrestacaoServico
-    #def __unicode__(self):
-    #    return "%s %s" % (self.pacote_servico.nome, self.servico.nome)
+    def __unicode__(self):
+        return "%s %s" % (self.cliente.nome, self.servico.nome)
 
     def get_absolute_url(self, return_type=None):
         return generic_get_absolute_url(self, return_type)
@@ -386,7 +382,6 @@ class PrestacaoServico(models.Model):
 class FormaPagamento(models.Model):
     """
     Armazena os possiveis formas de pagamento.
-
     """
     class Meta:
         verbose_name = 'Forma de Pagamento'
@@ -416,9 +411,8 @@ class Pagamento(models.Model):
     forma_pagamento = models.ForeignKey(FormaPagamento)
     parcelas = models.PositiveIntegerField()
 
-    #todo: escrever unicode de Pagamento
-    #def __unicode__(self):
-    #    return "%s %s" % (self.pacote_servico.nome, self.servico.nome)
+    def __unicode__(self):
+        return "%s %s" % (self.cliente.nome, self.valor, self.forma_pagamento.descricao)
 
     def get_absolute_url(self, return_type=None):
         return generic_get_absolute_url(self, return_type)
