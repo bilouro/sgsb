@@ -6,24 +6,10 @@ from django.db.models.signals import post_save
 
 from cadastro.utils import generic_get_absolute_url
 
-
-"""
-    dia_hora = models.DateTimeField()
-    resumo = models.CharField(max_length=140)
-    texto = models.TextField()
-    tipo = models.SmallIntegerField(choices=TIPO_CLASSIFICACAO)
-    turma = models.ForeignKey(Turma)
-    email = models.EmailField(null=True, blank=True)
-TIPO_CLASSIFICACAO = (
-    (10, 'Cafe'),
-    (20, 'Colacao'),
-    (30, 'Almoco'),
-    (40, 'Lanche'),
-    (50, 'Janta')
-    tipo = models.SmallIntegerField(choices=TIPO_CLASSIFICACAO)
-
-"""
-
+ESTADOS = (
+    ('RJ', 'Rio de Janeiro'),
+    ('SP', 'Sao Paulo'),
+)
 class Pessoa(models.Model):
     """
     Classe com informacoes da pessoa
@@ -35,7 +21,13 @@ class Pessoa(models.Model):
         ordering = ["nome"]
 
     nome = models.CharField(max_length=256)
-    endereco = models.TextField(null=True, blank=True)
+    logradouro = models.CharField(max_length=150, null=True, blank=True)
+    numero = models.IntegerField(null=True, blank=True)
+    complemento = models.CharField(max_length=60, null=True, blank=True)
+    bairro = models.CharField(max_length=60, null=True, blank=True)
+    cidade = models.CharField(max_length=80, null=True, blank=True)
+    estado = models.CharField(max_length=2, null=True, blank=True, choices=ESTADOS)
+    cep = models.CharField(max_length=9, null=True, blank=True)
     telefone = models.CharField(max_length=150, null=True, blank=True)
     email = models.EmailField(null=True, blank=True)
     cpf = models.CharField(max_length=15, null=True, blank=True)

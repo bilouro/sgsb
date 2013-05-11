@@ -9,43 +9,43 @@ from cadastro.models import *
 
 
 class ClienteAdmin(admin.ModelAdmin):
-    list_display = ('nome', 'endereco', 'telefone', 'email', 'cpf', 'identidade', 'orgao_expedidor', 'data_nascimento', 'data_cadastro', 'status')
+    list_display = ('nome', 'telefone', 'email', 'cpf', 'identidade', 'orgao_expedidor', 'data_nascimento', 'data_cadastro', 'status')
     date_hierarchy = 'data_cadastro'
-    search_fields = ['nome', 'endereco', 'telefone', 'email', 'cpf', 'identidade', 'orgao_expedidor', ] #,'turma__nome', 'palavras_chave']
+    search_fields = ['nome', 'logradouro', 'telefone', 'email', 'cpf', 'identidade', 'orgao_expedidor', ] #,'turma__nome', 'palavras_chave']
     #ordering = ('-dia',)
     list_filter = ['status',]
 
 class PessoaAdmin(admin.ModelAdmin):
     fieldsets = (
         ('Dados Pessoais', {
-            'fields': ('nome', 'endereco', ('telefone', 'email'), ('cpf', 'identidade', 'orgao_expedidor'), 'data_nascimento')
+            'fields': ('nome', ('logradouro', 'numero'), ('complemento', 'bairro'), ('cidade', 'estado', 'cep'), ('telefone', 'email'), ('cpf', 'identidade', 'orgao_expedidor'), 'data_nascimento')
         }),
     )
-    list_display = ('nome', 'endereco', 'telefone', 'email', 'cpf', 'identidade', 'orgao_expedidor', 'data_nascimento')
+    list_display = ('nome', 'telefone', 'email', 'cpf', 'identidade', 'orgao_expedidor', 'data_nascimento')
     date_hierarchy = 'data_nascimento'
-    search_fields = ['nome', 'endereco', 'telefone', 'email', 'cpf', 'identidade', 'orgao_expedidor', ] #,'turma__nome', 'palavras_chave']
+    search_fields = ['nome', 'logradouro', 'telefone', 'email', 'cpf', 'identidade', 'orgao_expedidor', ] #,'turma__nome', 'palavras_chave']
     #ordering = ('-dia',)
-    #list_filter = ['turma','periodo']
+    list_filter = ['bairro', 'cidade',]
 
 class DependenteFuncionarioAdmin(admin.ModelAdmin):
-    list_display = ('funcionario', 'nome', 'endereco', 'telefone', 'email', 'cpf', 'identidade', 'orgao_expedidor', 'data_nascimento')
+    list_display = ('funcionario', 'nome', 'telefone', 'email', 'cpf', 'identidade', 'orgao_expedidor', 'data_nascimento')
     date_hierarchy = 'data_nascimento'
-    search_fields = ['nome', 'endereco', 'telefone', 'email', 'cpf', 'identidade', 'orgao_expedidor', 'funcionario__nome'] #,'turma__nome', 'palavras_chave']
+    search_fields = ['nome', 'logradouro', 'telefone', 'email', 'cpf', 'identidade', 'orgao_expedidor', 'funcionario__nome'] #,'turma__nome', 'palavras_chave']
     #ordering = ('-dia',)
     list_filter = ['funcionario',]
 
 class DependenteFuncionarioInline(admin.TabularInline):
     model = DependenteFuncionario
     fk_name = 'funcionario'
-    exclude = ('endereco', 'telefone', 'email',)
+    exclude = ('logradouro', 'numero','complemento', 'bairro','cidade', 'estado', 'cep', 'telefone', 'email',)
     extra = 0
 class EspecialidadeFuncionarioInline(admin.TabularInline):
     model = EspecialidadeFuncionario
     extra = 1
 class FuncionarioAdmin(admin.ModelAdmin):
-    list_display = ('nome', 'endereco', 'telefone', 'email', 'cpf', 'identidade', 'orgao_expedidor', 'data_nascimento', 'data_admissao', 'status', 'cargo')
+    list_display = ('nome', 'telefone', 'email', 'cpf', 'identidade', 'orgao_expedidor', 'data_nascimento', 'data_admissao', 'status', 'cargo')
     date_hierarchy = 'data_admissao'
-    search_fields = ['nome', 'endereco', 'telefone', 'email', 'cpf', 'identidade', 'orgao_expedidor' ] #,'turma__nome', 'palavras_chave']
+    search_fields = ['nome', 'logradouro', 'telefone', 'email', 'cpf', 'identidade', 'orgao_expedidor' ] #,'turma__nome', 'palavras_chave']
     #ordering = ('-dia',)
     inlines = [ DependenteFuncionarioInline, EspecialidadeFuncionarioInline]
     list_filter = ['status','cargo']
