@@ -1,0 +1,7 @@
+temos para fazer,
+- atualizar cadastro de pessoas (dados)
+- adicionar todos os estados do brasil
+- acertar os campos como o professor pediu (vários na mesma linha -> fiz um exemplo em PESSOA) (fields)
+- rever ordem dos campos nos grids
+- colocar dados de rg e cpf para frente
+- fazer telas customizadas e relatorios
