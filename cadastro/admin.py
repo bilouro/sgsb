@@ -143,6 +143,13 @@ class PacoteServicoClienteAdmin(admin.ModelAdmin):
     #ordering = ('-dia',)
     list_filter = ['cliente',]
 
+class PrestacaoServicoAdmin(admin.ModelAdmin):
+    list_display = ('status', 'horario', 'recepcionista')
+    search_fields = ['horario__funcionario__nome',]
+    #ordering = ('-dia',)
+    #date_hierarchy = 'horario'
+    list_filter = ['status']
+
 class PrestacaoServicoPacoteAdmin(admin.ModelAdmin):
     list_display = ('status', 'horario', 'recepcionista', 'servico_pacoteservico', 'pacoteServico_cliente')
     search_fields = ['horario__funcionario__nome', 'servico_pacoteservico__servico__nome', 'pacoteServico_cliente__pacote_servico__nome', 'pacoteServico_cliente__cliente__nome']
@@ -150,12 +157,7 @@ class PrestacaoServicoPacoteAdmin(admin.ModelAdmin):
     #date_hierarchy = 'horario'
     list_filter = ['status']
 
-class PrestacaoServicoAdmin(admin.ModelAdmin):
-    list_display = ('status', 'horario', 'recepcionista', 'cliente', 'servico', 'pagamento')
-    search_fields = ['horario__funcionario__nome', 'cliente__nome', 'servico__nome']
-    list_filter = ['status']
-
-class PrestacaoServicoAdmin(admin.ModelAdmin):
+class PrestacaoServicoServicoAdmin(admin.ModelAdmin):
     list_display = ('status', 'horario', 'recepcionista', 'cliente', 'servico', 'pagamento')
     search_fields = ['horario__funcionario__nome', 'cliente__nome', 'servico__nome']
     list_filter = ['status']
@@ -166,7 +168,7 @@ class FormaPagamentoAdmin(admin.ModelAdmin):
 
 
 class PrestacaoServicoInline(admin.TabularInline):
-    model = PrestacaoServico
+    model = PrestacaoServicoServico
     #fk_name = 'funcionario'
     exclude = ('status', 'horario', 'recepcionista','cliente')
     extra = 0
@@ -186,6 +188,7 @@ class PagamentoAdmin(admin.ModelAdmin):
 admin.site.register(Pagamento, PagamentoAdmin)
 admin.site.register(FormaPagamento, FormaPagamentoAdmin)
 admin.site.register(PrestacaoServico, PrestacaoServicoAdmin)
+admin.site.register(PrestacaoServicoServico, PrestacaoServicoServicoAdmin)
 admin.site.register(PrestacaoServicoPacote, PrestacaoServicoPacoteAdmin)
 admin.site.register(PacoteServicoCliente, PacoteServicoClienteAdmin)
 admin.site.register(StatusPrestacaoServico, StatusPrestacaoServicoAdmin)

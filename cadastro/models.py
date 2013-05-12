@@ -304,7 +304,7 @@ class StatusPrestacaoServico(models.Model):
     cancelado = models.BooleanField()
 
     def __unicode__(self):
-        return self.descricao
+        return self.descricao_curta
 
     def get_absolute_url(self, return_type=None):
         return generic_get_absolute_url(self, return_type)
@@ -328,26 +328,10 @@ class PacoteServicoCliente(models.Model):
     def get_absolute_url(self, return_type=None):
         return generic_get_absolute_url(self, return_type)
 
-class PrestacaoServicoPacote(models.Model):
-    """
-    Armazena as prestaoes de servicos
-    """
-    class Meta:
-        verbose_name = 'Prestacao Servico de Pacote'
-        verbose_name_plural = 'Prestacoes de Servicos de Pacotes'
-
-    status = models.ForeignKey(StatusPrestacaoServico)
-    horario = models.ForeignKey(HorarioDisponivelFuncionario, null=True, blank=True)
-    recepcionista = models.ForeignKey(Funcionario)
-    servico_pacoteservico = models.ForeignKey(ServicoPacoteServico)
-    pacoteServico_cliente = models.ForeignKey(PacoteServicoCliente)
-
-    def __unicode__(self):
-        return "%s %s" % (self.servico_pacoteservico.servico.nome, self.pacoteServico_cliente.cliente.nome)
-
-    def get_absolute_url(self, return_type=None):
-        return generic_get_absolute_url(self, return_type)
-
+DISCRIMINATOR = (
+    ('SERVICO', 'Servico'),
+    ('PACOTE', 'Pacote'),
+)
 class PrestacaoServico(models.Model):
     """
     Armazena as prestaoes de servicos
@@ -358,8 +342,40 @@ class PrestacaoServico(models.Model):
 
     status = models.ForeignKey(StatusPrestacaoServico)
     horario = models.ForeignKey(HorarioDisponivelFuncionario, null=True, blank=True)
-
     recepcionista = models.ForeignKey(Funcionario)
+    discriminator = models.CharField(max_length=10, choices=DISCRIMINATOR)
+
+    def __unicode__(self):
+        return "[%s] %s"% (self.discriminator, self.status.descricao_curta)
+
+    def get_absolute_url(self, return_type=None):
+        return generic_get_absolute_url(self, return_type)
+
+class PrestacaoServicoPacote(PrestacaoServico):
+    """
+    Armazena as prestaoes de servicos
+    """
+    class Meta:
+        verbose_name = 'Prestacao Servico de Pacote'
+        verbose_name_plural = 'Prestacoes de Servicos de Pacotes'
+
+    servico_pacoteservico = models.ForeignKey(ServicoPacoteServico)
+    pacoteServico_cliente = models.ForeignKey(PacoteServicoCliente)
+
+    def __unicode__(self):
+        return "%s %s" % (self.servico_pacoteservico.servico.nome, self.pacoteServico_cliente.cliente.nome)
+
+    def get_absolute_url(self, return_type=None):
+        return generic_get_absolute_url(self, return_type)
+
+class PrestacaoServicoServico(PrestacaoServico):
+    """
+    Armazena as prestaoes de servicos
+    """
+    class Meta:
+        verbose_name = 'Prestacao Servico Simples'
+        verbose_name_plural = 'Prestacoes de Servicos Simples'
+
     cliente = models.ForeignKey(Cliente)
     servico = models.ForeignKey(Servico)
     pagamento = models.ForeignKey('Pagamento', null=True, blank=True)
