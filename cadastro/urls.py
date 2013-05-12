@@ -1,10 +1,11 @@
 from django.conf.urls import *
 from django.contrib.auth.views import login, logout
-
+from views import PrestacaoServicoListView
 urlpatterns = patterns('',
      (r'^$', 'cadastro.views.index'),
      (r'^entrar/$', 'django.contrib.auth.views.login', {'template_name': 'entrar.html'}, 'entrar'),
      (r'^sair/$', 'django.contrib.auth.views.logout', {'template_name': 'sair.html'}, 'sair'),
+     url(r'^servicos/$', PrestacaoServicoListView.as_view(), name='prestacaoservico-list'),
 
 #    (r'^registrar/$', 'core.views.registrar', {}, 'registrar'),
 #    (r'^redefinir/(?P<chave_ativacao>\S+)/$', 'core.views.redefinir'),
