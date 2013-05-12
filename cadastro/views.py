@@ -15,16 +15,15 @@ from django.contrib.auth.decorators import login_required
 #from django.contrib.auth.models import User
 #from django.db import transaction
 
-#from prototipoIphone.prototipo.models import *
-#from prototipoIphone.prototipo.forms import *
-
 #from django.utils import simplejson
 #from django.core.cache import cache
 
 #import datetime
-#import re
 from django.conf import settings
 from util import utils
+from django.views.generic.list import ListView
+from django.utils import timezone
+
 from cadastro.models import *
 
 @login_required
@@ -34,27 +33,41 @@ def index(request):
 
 @login_required
 def cria_agenda(request):
-    import calendar, datetime
+    import calendar, datetime,itertools
 
     ANO=2013
     MES=5
 
-    ult_dia_mes=calendar.monthrange(ANO,MES)[1]
-    d = datetime.date(ANO,MES,1)
-    dias_list = range(ult_dia_mes)
 
     #todos ids que tem ao menos uma especialidade
     id_funcionario_com_especialidade_list = EspecialidadeFuncionario.objects.all().values_list('funcionario__id', flat=True).distinct()
-    #busca os funcionarios
-    funcionario_com_especialidade_list = Funcionario.objects.filter(id__in= id_funcionario_com_especialidade_list)
 
+
+
+    #busca os funcionarios
+    funcionario_com_especialidade_list = \
+        Funcionario.objects.filter( id__in = id_funcionario_com_especialidade_list )
+
+    primeiro_dia_mes = datetime.date(ANO,MES,1)
+    ult_dia_mes=calendar.monthrange(ANO,MES)[1]
+    de_zero_a_ult_dia_mes_list = range(ult_dia_mes)
     #busca os horarios disponiveis
     horario_disponivel_list = HorarioDisponivel.objects.all()
 
-    for h,f,soma in itertools.product(horario_disponivel_list, funcionario_com_especialidade_list, dias_list):
+    hdf_list = []
+    for horario, funcionario, dias_a_somar in \
+        itertools.product(
+            horario_disponivel_list,
+            funcionario_com_especialidade_list,
+            de_zero_a_ult_dia_mes_list):
+
        hdf = HorarioDisponivelFuncionario()
-       hdf.data = d + datetime.timedelta(days=soma)
-       hdf.hora = h
-       hdf.funcionario = f
+       hdf.data = primeiro_dia_mes + \
+                  datetime.timedelta(days=dias_a_somar)
+       hdf.hora = horario
+       hdf.funcionario = funcionario
        hdf.disponivel = True
-       hdf.save()
+       hdf_list.append(hdf)
+
+    # cria todas de uma só vez
+    HorarioDisponivelFuncionario.objects.bulk_create(hdf_list)
