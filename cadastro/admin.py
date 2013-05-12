@@ -144,11 +144,11 @@ class PacoteServicoClienteAdmin(admin.ModelAdmin):
     list_filter = ['cliente',]
 
 class PrestacaoServicoAdmin(admin.ModelAdmin):
-    list_display = ('status', 'horario', 'recepcionista')
+    list_display = ('status', 'horario', 'recepcionista', 'discriminator')
     search_fields = ['horario__funcionario__nome',]
     #ordering = ('-dia',)
     #date_hierarchy = 'horario'
-    list_filter = ['status']
+    list_filter = ['status', 'discriminator']
 
 class PrestacaoServicoPacoteAdmin(admin.ModelAdmin):
     list_display = ('status', 'horario', 'recepcionista', 'servico_pacoteservico', 'pacoteServico_cliente')
