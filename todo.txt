@@ -1,7 +1,29 @@
-temos para fazer,
+== GERAL ==
 - atualizar cadastro de pessoas (dados)
 - adicionar todos os estados do brasil
-- acertar os campos como o professor pediu (vários na mesma linha -> fiz um exemplo em PESSOA) (fields)
-- rever ordem dos campos nos grids
-- colocar dados de rg e cpf para frente
-- fazer telas customizadas e relatorios
+- definir exato escopo de telas para:
+  - figura do administrador
+  - figura da secretária
+
+== ADMIN ==
+- fazer customização do menu principal (esconder telas q não devem aparecer)
+- fazer customização dos fields e grids
+  - (vários na mesma linha -> fiz um exemplo em PESSOA)
+  - dados de rg e cpf para frente
+
+== RELATORIOS ==
+  - relatorio servicos por filtro
+  - relatorio lucro
+  - relatorio funcionarios
+  - relatorio recebimentos
+
+== TELAS CUSTOM ==
+  - cadastar novo servico/pacoteservico
+  - agendar servico simples /realizar servico
+  - agendar servico pacote /realizar servico
+  - desmarcar servico
+  - realizar pagamento
+  - histórico pagamento
+  - cancelar servico
+  - cancelar pagamento
+  - tela de gerar agendamento
