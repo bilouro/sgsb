@@ -4,6 +4,7 @@ from django.contrib import admin
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.sessions.models import Session
+from django.db.models import Q
 from cadastro.models import *
 #from cadastro.models import Cliente, Funcionario, UserProfile
 
@@ -143,12 +144,102 @@ class PacoteServicoClienteAdmin(admin.ModelAdmin):
     #ordering = ('-dia',)
     list_filter = ['cliente',]
 
+from django.utils.translation import ugettext_lazy as _
+from django.contrib.admin import SimpleListFilter
+
+class ClientesListFilter(SimpleListFilter):
+    title = _('clientes')
+    parameter_name = 'cliente'
+    def lookups(self, request, model_admin):
+        cliente_list = Cliente.objects.all().order_by('-visto_em')[:15]
+        return ( (c.id , c.nome) for c in cliente_list )
+
+    def queryset(self, request, queryset):
+        if self.value() is None:
+            return queryset
+
+        #busca todos os servicos SIMPLES do cliente
+        pss_id_list = PrestacaoServicoServico.objects.filter(cliente__id=self.value()).values_list('id', flat=True)
+        #busca todos os servicos de PACOTE do cliente
+        psp_id_list = PrestacaoServicoPacote.objects.filter(pacoteServico_cliente__cliente__id=self.value()).values_list('id', flat=True)
+
+        return queryset.filter(Q(id__in=pss_id_list) | Q(id__in=psp_id_list))
+
+class PagoListFilter(SimpleListFilter):
+    title = _('status pagamento')
+    parameter_name = 'pagto'
+    def lookups(self, request, model_admin):
+        """
+        * pagamento isNull == True  -> tras os nao pagos
+        * pagamento isNull == False -> tras os pagos
+        """
+        return ( ("False", 'Pago') , ("True",'Nao Pago') )
+
+    def queryset(self, request, queryset):
+        if self.value() is None:
+            return queryset
+
+        bool_value = (self.value() == "True")
+
+        #busca todos os servicos SIMPLES do cliente
+        pss_id_list = PrestacaoServicoServico.objects.filter(pagamento__isnull=bool_value).values_list('id', flat=True)
+        #busca todos os servicos de PACOTE do cliente
+        psp_id_list = PrestacaoServicoPacote.objects.filter(pacoteServico_cliente__pagamento__isnull=bool_value).values_list('id', flat=True)
+
+        return queryset.filter(Q(id__in=pss_id_list) | Q(id__in=psp_id_list))
+
+class TipoPrestacaoServicoListFilter(SimpleListFilter):
+    title = _('tipo')
+    parameter_name = 'tipo'
+    def lookups(self, request, model_admin):
+        return ( ("SERVICO", 'Apenas Servicos') , ("PACOTE",'Apenas Pacotes') )
+
+    def queryset(self, request, queryset):
+        if self.value() is None:
+            return queryset
+
+        return queryset.filter(discriminator=self.value())
+
 class PrestacaoServicoAdmin(admin.ModelAdmin):
-    list_display = ('status', 'horario', 'recepcionista', 'discriminator')
-    search_fields = ['horario__funcionario__nome',]
+    def servico_pacote(self, obj):
+        return "%s (%s)" % (obj.servico_prestado , obj.pacote_servico)
+
+    servico_pacote.allow_tags = True
+    servico_pacote.short_description = u'Servico (Pacote)'
+    #servico_pacote.admin_order_field = 'servico_prestado'
+
+    def funcionario(self, obj):
+        return "(nenhum)" if obj.horario is None else "%s" % (obj.horario.funcionario.nome)
+
+    funcionario.allow_tags = True
+    funcionario.short_description = u'Funcionario'
+
+    def data_hora(self, obj):
+        return "(nenhum)" if obj.horario is None else "%s %s" % (obj.horario.data.strftime("%d/%m/%Y"), obj.horario.hora.hora.strftime('%H:%M'))
+
+    data_hora.allow_tags = True
+    data_hora.short_description = u'Data e hora'
+
+    list_display = ('cliente', 'servico_pacote', 'status', 'data_hora', 'funcionario', 'pago')
+
+    search_fields = []#'horario__funcionario__nome',]#'cliente__nome', 'pacoteServico_cliente__cliente__nome']
     #ordering = ('-dia',)
     #date_hierarchy = 'horario'
-    list_filter = ['status', 'discriminator']
+    list_filter = ['status', PagoListFilter, TipoPrestacaoServicoListFilter, ClientesListFilter ]
+
+    def queryset(self, request):
+        qs = super(PrestacaoServicoAdmin, self).queryset(request)
+        query = request.GET.get('q', '')
+
+        #qs = PrestacaoServico.objects.all()
+        if query != '':
+            #busca todos os servicos SIMPLES do cliente
+            pss_id_list = PrestacaoServicoServico.objects.filter(cliente__nome__icontains=query).values_list('id', flat=True)
+            #busca todos os servicos de PACOTE do cliente
+            psp_id_list = PrestacaoServicoPacote.objects.filter(pacoteServico_cliente__cliente__nome__icontains=query).values_list('id', flat=True)
+            qs = qs.filter(Q(id__in=pss_id_list) | Q(id__in=psp_id_list))
+
+        return qs
 
 class PrestacaoServicoPacoteAdmin(admin.ModelAdmin):
     list_display = ('status', 'horario', 'recepcionista', 'servico_pacoteservico', 'pacoteServico_cliente')

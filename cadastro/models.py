@@ -69,6 +69,7 @@ class Cliente(Pessoa):
 
     data_cadastro = models.DateTimeField()
     status = models.ForeignKey(StatusCliente)
+    visto_em = models.DateTimeField()
 
     def __unicode__(self):
         return self.nome
@@ -275,7 +276,7 @@ class HorarioDisponivelFuncionario(models.Model):
     disponivel = models.BooleanField()
 
     def __unicode__(self):
-        return "%s %s %s" % (self.data.strftime("%d/%m/%Y"), self.funcionario.nome, self.hora.hora.strftime('%H:%M'))
+        return "%s em %s as %sh" % (self.funcionario.nome, self.data.strftime("%d/%m/%Y"), self.hora.hora.strftime('%H:%M'))
 
     def get_absolute_url(self, return_type=None):
         return generic_get_absolute_url(self, return_type)
@@ -344,6 +345,76 @@ class PrestacaoServico(models.Model):
     horario = models.ForeignKey(HorarioDisponivelFuncionario, null=True, blank=True)
     recepcionista = models.ForeignKey(Funcionario)
     discriminator = models.CharField(max_length=10, choices=DISCRIMINATOR)
+
+    def __init__(self, *args, **kwargs):
+        super(PrestacaoServico, self).__init__(*args, **kwargs)
+        self.obj_filho = None
+
+
+    def _get_servico_prestado(self):
+        "Retorna o servico prestado de acordo com o tipo de PrestacaoServico(Servico|Pacote)"
+        if self.discriminator == "PACOTE":
+            if self.obj_filho is None:
+                self.obj_filho = PrestacaoServicoPacote.objects.get(id=self.id)
+
+            return '%s' % (self.obj_filho.servico_pacoteservico.servico.nome)
+        elif self.discriminator == "SERVICO":
+            if self.obj_filho is None:
+                self.obj_filho = PrestacaoServicoServico.objects.get(id=self.id)
+
+            return '%s' % (self.obj_filho.servico.nome)
+        else:
+            return 'ops, isso nao deveria aparecer'
+
+    servico_prestado = property(_get_servico_prestado)
+
+    def _get_pacote_servico(self):
+        "Retorna o pacote de servico se pacote, senao retorna - "
+        if self.discriminator == "PACOTE":
+            if self.obj_filho is None:
+                self.obj_filho = PrestacaoServicoPacote.objects.get(id=self.id)
+
+            return '%s' % (self.obj_filho.servico_pacoteservico.pacote_servico.nome)
+        elif self.discriminator == "SERVICO":
+            return 'Avulso'
+        else:
+            return 'ops, isso nao deveria aparecer'
+
+    pacote_servico = property(_get_pacote_servico)
+
+    def _get_pago(self):
+        "Retorna o pacote de servico se pacote, senao retorna - "
+        if self.discriminator == "PACOTE":
+            if self.obj_filho is None:
+                self.obj_filho = PrestacaoServicoPacote.objects.get(id=self.id)
+
+            return '%s' % ("Sim" if self.obj_filho.pacoteServico_cliente.pagamento != None else "Nao")
+        elif self.discriminator == "SERVICO":
+            if self.obj_filho is None:
+                self.obj_filho = PrestacaoServicoServico.objects.get(id=self.id)
+
+            return '%s' % ("Sim" if self.obj_filho.pagamento != None else "Nao")
+        else:
+            return 'ops, isso nao deveria aparecer'
+
+    pago = property(_get_pago)
+
+    def _get_cliente(self):
+        "Retorna o cliente "
+        if self.discriminator == "PACOTE":
+            if self.obj_filho is None:
+                self.obj_filho = PrestacaoServicoPacote.objects.get(id=self.id)
+
+            return '%s' % (self.obj_filho.pacoteServico_cliente.cliente.nome)
+        elif self.discriminator == "SERVICO":
+            if self.obj_filho is None:
+                self.obj_filho = PrestacaoServicoServico.objects.get(id=self.id)
+
+            return '%s' % (self.obj_filho.cliente.nome)
+        else:
+            return 'ops, isso nao deveria aparecer'
+
+    cliente = property(_get_cliente)
 
     def __unicode__(self):
         return "[%s] %s"% (self.discriminator, self.status.descricao_curta)
