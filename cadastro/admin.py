@@ -151,6 +151,8 @@ class ClientesListFilter(SimpleListFilter):
     title = _('clientes')
     parameter_name = 'cliente'
     def lookups(self, request, model_admin):
+        #busca os N clientes mais recentes
+        #todo:criar uma tabela de parametros de sistema
         cliente_list = Cliente.objects.all().order_by('-visto_em')[:15]
         return ( (c.id , c.nome) for c in cliente_list )
 
