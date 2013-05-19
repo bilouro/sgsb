@@ -1,14 +1,16 @@
 from django.conf.urls import *
 from django.contrib.auth.views import login, logout
+from cadastro.cbv.relatoriofuncionarios import RelatorioFuncionarioResultado
 from views import PrestacaoServicoListView
-from cbv.relatoriofuncionarios import RelatorioFuncionarioView
+from cbv.relatoriofuncionarios import RelatorioFuncionarioFiltro
 
 urlpatterns = patterns('',
      (r'^$', 'cadastro.views.index'),
      (r'^entrar/$', 'django.contrib.auth.views.login', {'template_name': 'entrar.html'}, 'entrar'),
      (r'^sair/$', 'django.contrib.auth.views.logout', {'template_name': 'sair.html'}, 'sair'),
      url(r'^servicos/$', PrestacaoServicoListView.as_view(), name='prestacaoservico-list'),
-     url(r'^relatorio/funcionario$', RelatorioFuncionarioView.as_view(), name='relatorio-funcionario'),
+     url(r'^relatorio/funcionario/filtro$', RelatorioFuncionarioFiltro.as_view(), name='relatorio-funcionario-filtro'),
+     url(r'^relatorio/funcionario/resultado', RelatorioFuncionarioResultado.as_view(), name='relatorio-funcionario-resultado'),
 
 #    (r'^registrar/$', 'core.views.registrar', {}, 'registrar'),
 #    (r'^redefinir/(?P<chave_ativacao>\S+)/$', 'core.views.redefinir'),

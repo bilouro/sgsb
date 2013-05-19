@@ -1,0 +1,69 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+
+{% block extrahead %}
+{{ block.super }}
+<link rel="stylesheet" type="text/css" href="/static/admin/css/widgets.css" media="all">
+
+<script type="text/javascript" src="/admin/jsi18n/"></script>
+<script type="text/javascript" src="/static/admin/js/core.js"></script>
+<script type="text/javascript" src="/static/admin/js/admin/RelatedObjectLookups.js"></script>
+<script type="text/javascript" src="/static/admin/js/jquery.js"></script>
+<script type="text/javascript" src="/static/admin/js/jquery.init.js"></script>
+<script type="text/javascript" src="/static/admin/js/actions.js"></script>
+
+<link rel="stylesheet" type="text/css" href="/static/admin/css/forms.css" />
+<!--[if lte IE 7]><link rel="stylesheet" type="text/css" href="/static/admin/css/ie.css" /><![endif]-->
+<script type="text/javascript">window.__admin_media_prefix__ = "/static/admin/";</script>
+
+{{ form.media }}
+{% endblock %}
+
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+<a href="/admin/">Início</a>
+&rsaquo; <a href="/admin/cadastro/">Cadastro</a>
+&rsaquo; Relatorio de Funcionarios
+</div>
+{% endblock %}
+
+
+{% block content %}
+<div id="content" class="colM">
+<h1>Relatorio de Funcionarios</h1>
+<div id="content-main">
+
+<div class="module filtered" id="changelist">
+<table id="result_list">
+<thead>
+<tr >
+    <th scope="col">Nome</th>
+    <th scope="col">Cpf</th>
+    <th scope="col">Identidade</th>
+    <th scope="col">Status</th>
+    <th scope="col">Cargo</th>
+    <th scope="col">Especialidades</th>
+</tr>
+</thead>
+<tbody>
+{% for f in object_list %}
+<tr class="{% cycle row1,row2 %}">
+    <td width="200px">{{ f.nome }}</td>
+    <td width="100px">{{ f.cpf|default_if_none:"-" }}</td>
+    <td width="200px">{{ f.identidade|default_if_none:"-" }} {{ f.orgao_expedidor|default_if_none:"" }}</td>
+    <td width="100px">{{ f.status }}</td>
+    <td width="200px">{{ f.cargo }}</td>
+    <td width="200px">{% firstof f.especialidades "-" %}</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+
+
+</div>
+</div>
+
+{% endblock %}
+
