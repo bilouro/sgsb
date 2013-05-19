@@ -123,6 +123,13 @@ class Funcionario(Pessoa):
     status = models.ForeignKey(StatusFuncionario)
     cargo = models.ForeignKey(Cargo)
 
+    def _especialidades(self):
+        "Retorna as especialidades separado por virgula"
+        especialidadefuncionario_list = EspecialidadeFuncionario.objects.filter(funcionario = self)
+        return ', '.join([ef.especialidade.descricao for ef in especialidadefuncionario_list])
+
+    especialidades = property(_especialidades)
+
     def __unicode__(self):
         return self.nome
 
