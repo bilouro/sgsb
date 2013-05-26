@@ -19,8 +19,7 @@ usuario: gerente senha: gerente
 - [feito bilouro] cadastro Funcionarios
 - [feito bilouro] cadastro Pacotes de Servicos
 - [feito bilouro] cadastro Servicos
-- [pend] relatorio lucro
-- [bilouro fazendo] relatorio funcionarios
+- [feito bilouro] relatorio funcionarios
 - [pend] cancelar servico
 - [pend] cancelar pagamento
 - [feito bilouro] horarios disponiveis
@@ -37,8 +36,10 @@ usuario: secretaria senha: secretaria
 - [pend] novo servico/novo pacote
 - [pend] realizar pagamento
 - [pend] historico de pagamentos efetuados
-- [pend] relatorio servicos por filtro
+- [pend] relatorio servicos prestados/agendados
 - [pend] relatorio recebimentos
+- [pend] relatorio clientes
+- [pend] relatorio pacotes pendentes
 
 == OUTROS ITENS A FAZER ==
 - [meninas fazendo] atualizar cadastro de funcionarios/clientes pois esta com campos em branco
