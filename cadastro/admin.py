@@ -163,12 +163,12 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.admin import SimpleListFilter
 
 class ClientesListFilter(SimpleListFilter):
-    title = _('clientes')
+    title = _('top 10 clientes')
     parameter_name = 'cliente'
     def lookups(self, request, model_admin):
         #busca os N clientes mais recentes
         #todo:criar uma tabela de parametros de sistema
-        cliente_list = Cliente.objects.all().order_by('-visto_em')[:15]
+        cliente_list = Cliente.objects.all().order_by('-visto_em')[:10]
         return ( (c.id , c.nome) for c in cliente_list )
 
     def queryset(self, request, queryset):
