@@ -42,28 +42,41 @@ class RelatorioFuncionarioFiltro(FormView):
     success_url = '/cadastro/relatorio/funcionario/resultado'
 
     def form_valid(self, form):
+        #busca todos os funcionarios
         funcionario_list = Funcionario.objects.all()
+
         if form.cleaned_data['admissao_de']:
+            #se prencheu admissao_de entao busta todas as admissoes maiores(greater than) ou iguais(equal) a data digitada(gte)
             funcionario_list = funcionario_list.filter(data_admissao__gte=form.cleaned_data['admissao_de'])
+
         if form.cleaned_data['admissao_ate']:
+            #se prencheu admissao_de entao busta todas as admissoes menores(less than) ou iguais(equal) a data digitada(lte)
             funcionario_list = funcionario_list.filter(data_admissao__lte=form.cleaned_data['admissao_ate'])
+
         if form.cleaned_data['aniversaria_em']:
+            #se prencheu mes de aniversario
             mes_aniversaria_em_list = []
+            #lista os meses escolhidos
             for mes in form.cleaned_data['aniversaria_em']:
                 mes_aniversaria_em_list.append(Q(data_nascimento__month=mes))
             if mes_aniversaria_em_list:
                 from operator import __or__ as OR
+                #filtra and (mes.month =1 OR mes.month=2 ...)
                 funcionario_list = funcionario_list.filter(reduce(OR, mes_aniversaria_em_list))
 
         if form.cleaned_data['status']:
+            #se prencheu status busca tosdos funcionarios com os status in (1,2)
             funcionario_list = funcionario_list.filter(status__in=form.cleaned_data['status'])
+
         if form.cleaned_data['cargo']:
+            #se prencheu cargo busca tosdos funcionarios com os cargos in (1,2)
             funcionario_list = funcionario_list.filter(cargo__in=form.cleaned_data['cargo'])
 
+        #chama o template resultado enviando o form, a lista_final,
+        # a data atual e a informacao se imprime ou nao o form
         return render_to_response('cadastro/cbv/relatoriofuncionariosresultado.html', {
             'form': form,
             'object_list':funcionario_list,
             'now': timezone.datetime.now(),
             'imprime_filtro': form.cleaned_data['imprime_filtro']
         }, context_instance=RequestContext(self.request))
-        #return super(RelatorioFuncionarioFiltro, self).form_valid(form)
