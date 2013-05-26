@@ -23,7 +23,7 @@ usuario: gerente senha: gerente
 - [pend] cancelar servico
 - [pend] cancelar pagamento
 - [feito bilouro] horarios disponiveis
-- [pend] gerar agenda para determinado mês
+- [pend] gerar agenda(horario) para determinado mês para todos os funcionarios
 
 VAI EXIBIR PARA RECEPCIONISTA, GERENTE, ADMINISTRADOR
 usuario: secretaria senha: secretaria
