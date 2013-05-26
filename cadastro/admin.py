@@ -29,6 +29,11 @@ class PessoaAdmin(admin.ModelAdmin):
     list_filter = ['bairro', 'cidade',]
 
 class DependenteFuncionarioAdmin(admin.ModelAdmin):
+    def get_model_perms(self, request):
+        """
+        Retorna um dict vazio de permissoes que esconde do admin index.
+        """
+        return {}
     list_display = ('funcionario', 'nome', 'telefone', 'email', 'cpf', 'identidade', 'orgao_expedidor', 'data_nascimento')
     date_hierarchy = 'data_nascimento'
     search_fields = ['nome', 'logradouro', 'telefone', 'email', 'cpf', 'identidade', 'orgao_expedidor', 'funcionario__nome'] #,'turma__nome', 'palavras_chave']
@@ -87,6 +92,11 @@ class EspecialidadeAdmin(admin.ModelAdmin):
     #list_filter = ['status',]
 
 class EspecialidadeFuncionarioAdmin(admin.ModelAdmin):
+    def get_model_perms(self, request):
+        """
+        Retorna um dict vazio de permissoes que esconde do admin index.
+        """
+        return {}
     list_display = ('especialidade','funcionario')
     #date_hierarchy = 'data_admissao'
     search_fields = ['especialidade__descricao','funcionario__descricao']
@@ -113,6 +123,11 @@ class ServicoAdmin(admin.ModelAdmin):
     list_filter = ['especialidade','habilitado']
 
 class ServicoPacoteServicoAdmin(admin.ModelAdmin):
+    def get_model_perms(self, request):
+        """
+        Retorna um dict vazio de permissoes que esconde do admin index.
+        """
+        return {}
     list_display = ('pacote_servico', 'servico', 'valor_rateado')
     search_fields = ['pacote_servico__nome', 'servico__nome', 'valor_rateado']
     #ordering = ('-dia',)
