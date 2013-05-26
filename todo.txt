@@ -1,29 +1,50 @@
-== GERAL ==
-- atualizar cadastro de pessoas (dados)
-- adicionar todos os estados do brasil
-- definir exato escopo de telas para:
-  - figura do administrador
-  - figura da secretária
+== DEFINICAO DE TELAS POR PAPEIS E STATUS DO ANDAMENTO ==
 
-== ADMIN ==
-- fazer customização do menu principal (esconder telas q não devem aparecer)
-- fazer customização dos fields e grids
-  - (vários na mesma linha -> fiz um exemplo em PESSOA)
-  - dados de rg e cpf para frente
+=== ACESSO ===
+http://sgsb.bilouro.com:8080/admin
 
-== RELATORIOS ==
-  - relatorio servicos por filtro
-  - relatorio lucro
-  - relatorio funcionarios
-  - relatorio recebimentos
+VAI EXIBIR APENAS PARA ADMINISTRADOR
+usuario: administrador senha: administrador
+- [feito bilouro] Cargos
+- [feito bilouro] Formas de Pagamento
+- [feito bilouro] Status Cliente
+- [feito bilouro] Status Funcionario
+- [feito bilouro] Status Prestacao Servico
+- [feito bilouro] UserProfiles
+- [feito bilouro] cadastro de usuarios
 
-== TELAS CUSTOM ==
-  - cadastar novo servico/pacoteservico
-  - agendar servico simples /realizar servico
-  - agendar servico pacote /realizar servico
-  - desmarcar servico
-  - realizar pagamento
-  - histórico pagamento
-  - cancelar servico
-  - cancelar pagamento
-  - tela de gerar agendamento
+VAI EXIBIR APENAS PARA GERENTE E ADMINISTRADOR
+usuario: gerente senha: gerente
+- [feito bilouro] cadastro Especialidades
+- [feito bilouro] cadastro Funcionarios
+- [feito bilouro] cadastro Pacotes de Servicos
+- [feito bilouro] cadastro Servicos
+- [pend] relatorio lucro
+- [bilouro fazendo] relatorio funcionarios
+- [pend] cancelar servico
+- [pend] cancelar pagamento
+- [feito bilouro] horarios disponiveis
+- [pend] gerar agenda para determinado mês
+
+VAI EXIBIR PARA RECEPCIONISTA, GERENTE, ADMINISTRADOR
+usuario: secretaria senha: secretaria
+- [feito bilouro] cadastro Clientes
+- [feito bilouro] gestao de Horarios Disponiveis Funcionarios
+- [feito bilouro] Prestacoes de Servicos
+- [pend] agendar servico
+- [pend] desmarcar servico
+- [pend] realizar ervico
+- [pend] novo servico/novo pacote
+- [pend] realizar pagamento
+- [pend] historico de pagamentos efetuados
+- [pend] relatorio servicos por filtro
+- [pend] relatorio recebimentos
+
+== OUTROS ITENS A FAZER ==
+- [meninas fazendo] atualizar cadastro de funcionarios/clientes pois esta com campos em branco
+- [meninas fazendo] adicionar todos os estados do brasil (em models.py)
+- [meninas fazendo] melhorar tela de login
+- [meninas fazendo] melhorar menu principal
+- [meninas fazendo] fazer customização dos fields e grids do admin conforme solicitacao professor
+         - (vários na mesma linha -> fiz um exemplo em PESSOA dentro de Admin.py)
+         - dados de rg e cpf para frente (pedido professor)
