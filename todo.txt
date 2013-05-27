@@ -33,7 +33,7 @@ usuario: secretaria senha: secretaria
 - [pend] agendar servico
 - [pend] desmarcar servico
 - [pend] realizar ervico
-- [pend] novo servico/novo pacote
+- [feito bilouro] novo servico/novo pacote
 - [pend] realizar pagamento
 - [pend] historico de pagamentos efetuados
 - [pend] relatorio servicos prestados/agendados
