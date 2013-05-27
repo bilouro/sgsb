@@ -1,14 +1,9 @@
-import urllib
-import datetime
 from django import forms
-#from django.core.urlresolvers import reverse
 from django.db.models.query_utils import Q
-from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template.context import RequestContext
 from django.utils import timezone
 from django.views.generic.edit import FormView
-from django.views.generic.list import ListView
 from cadastro.models import *
 
 from django.contrib.admin import widgets
@@ -39,9 +34,14 @@ class RelatorioFuncionarioFiltro(FormView):
 
     template_name = 'cadastro/cbv/relatoriofuncionariosfiltro.html'
     form_class = BuscaForm
-    success_url = '/cadastro/relatorio/funcionario/resultado'
+    #success_url = '/cadastro/relatorio/funcionario/resultado'
 
     def form_valid(self, form):
+        """
+        Metodo chamado apos o form ser corretamente validado.
+        O form ja se valida automaticamente de acordo com a declaracao de cada um.
+        ex: DateField exige uma data valida.. o mesmo para os outros...
+        """
         #busca todos os funcionarios
         funcionario_list = Funcionario.objects.all()
 
