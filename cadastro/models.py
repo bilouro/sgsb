@@ -3,7 +3,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
-
+from django.utils import timezone
 from cadastro.utils import generic_get_absolute_url
 
 ESTADOS = (
@@ -70,6 +70,10 @@ class Cliente(Pessoa):
     data_cadastro = models.DateTimeField()
     status = models.ForeignKey(StatusCliente)
     visto_em = models.DateTimeField()
+
+    def atualiza_visto_em_agora(self):
+        self.visto_em = timezone.datetime.now()
+        self.save()
 
     def __unicode__(self):
         return self.nome
@@ -312,7 +316,7 @@ class StatusPrestacaoServico(models.Model):
     cancelado = models.BooleanField()
 
     def __unicode__(self):
-        return self.descricao_curta
+        return self.descricao
 
     def get_absolute_url(self, return_type=None):
         return generic_get_absolute_url(self, return_type)
