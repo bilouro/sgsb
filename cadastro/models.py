@@ -362,18 +362,28 @@ class PrestacaoServico(models.Model):
         self.obj_filho = None
 
 
-    def _get_servico_prestado(self):
+    def _get_servico_object(self):
         "Retorna o servico prestado de acordo com o tipo de PrestacaoServico(Servico|Pacote)"
         if self.discriminator == "PACOTE":
             if self.obj_filho is None:
                 self.obj_filho = PrestacaoServicoPacote.objects.get(id=self.id)
 
-            return '%s' % (self.obj_filho.servico_pacoteservico.servico.nome)
+            return self.obj_filho.servico_pacoteservico.servico
         elif self.discriminator == "SERVICO":
             if self.obj_filho is None:
                 self.obj_filho = PrestacaoServicoServico.objects.get(id=self.id)
 
-            return '%s' % (self.obj_filho.servico.nome)
+            return self.obj_filho.servico
+        else:
+            return None
+
+    servico_object = property(_get_servico_object)
+
+    def _get_servico_prestado(self):
+        "Retorna o servico prestado de acordo com o tipo de PrestacaoServico(Servico|Pacote)"
+        retorno = self._get_servico_object()
+        if retorno:
+            return '%s' % (retorno.nome)
         else:
             return 'ops, isso nao deveria aparecer'
 
@@ -410,18 +420,29 @@ class PrestacaoServico(models.Model):
 
     pago = property(_get_pago)
 
-    def _get_cliente(self):
+    def _get_cliente_object(self):
         "Retorna o cliente "
         if self.discriminator == "PACOTE":
             if self.obj_filho is None:
                 self.obj_filho = PrestacaoServicoPacote.objects.get(id=self.id)
 
-            return '%s' % (self.obj_filho.pacoteServico_cliente.cliente.nome)
+            return self.obj_filho.pacoteServico_cliente.cliente
+
         elif self.discriminator == "SERVICO":
             if self.obj_filho is None:
                 self.obj_filho = PrestacaoServicoServico.objects.get(id=self.id)
 
-            return '%s' % (self.obj_filho.cliente.nome)
+            return self.obj_filho.cliente
+        else:
+            return None
+
+    cliente_object = property(_get_cliente_object)
+
+    def _get_cliente(self):
+        "Retorna o cliente "
+        retorno = self._get_cliente_object()
+        if retorno:
+            return '%s' % (retorno.nome)
         else:
             return 'ops, isso nao deveria aparecer'
 

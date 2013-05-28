@@ -237,7 +237,13 @@ class PrestacaoServicoAdmin(admin.ModelAdmin):
     data_hora.allow_tags = True
     data_hora.short_description = u'Data e hora'
 
-    list_display = ('cliente', 'servico_pacote', 'status', 'data_hora', 'funcionario', 'pago')
+    def acoes(self, obj):
+        return '<a href="/cadastro/prestacaoservico/%s/agendar">agendar</a>' % obj.id
+
+    acoes.allow_tags = True
+    acoes.short_description = u'Acoes'
+
+    list_display = ('cliente', 'servico_pacote', 'status', 'data_hora', 'funcionario', 'pago', 'acoes')
 
     search_fields = []#'horario__funcionario__nome',]#'cliente__nome', 'pacoteServico_cliente__cliente__nome']
     #ordering = ('-dia',)
