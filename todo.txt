@@ -30,7 +30,7 @@ usuario: secretaria senha: secretaria
 - [feito bilouro] cadastro Clientes
 - [feito bilouro] gestao de Horarios Disponiveis Funcionarios
 - [feito bilouro] Prestacoes de Servicos
-- [pend] agendar servico
+- [bilouro fazendo] agendar servico
 - [pend] desmarcar servico
 - [pend] realizar ervico
 - [feito bilouro] novo servico/novo pacote
