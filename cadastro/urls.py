@@ -2,6 +2,7 @@ from django.conf.urls import *
 from django.contrib.auth.views import login, logout
 from cadastro.cbv.prestacaoservico_agendar import PrestacaoServicoAgendar
 from cadastro.cbv.prestacaoservico_novo import PrestacaoServicoNovo
+from cadastro.cbv.relatorioclientes import RelatorioClienteFiltro
 from views import PrestacaoServicoListView
 from cbv.relatoriofuncionarios import RelatorioFuncionarioFiltro
 
@@ -13,6 +14,7 @@ urlpatterns = patterns('',
      url(r'^relatorio/funcionario$', RelatorioFuncionarioFiltro.as_view(), name='relatorio-funcionario'),
      url(r'^prestacaoservico/novo$', PrestacaoServicoNovo.as_view(), name='prestacao-servico-add'),
      url(r'^prestacaoservico/(?P<instance_id>\d+)/agendar$', PrestacaoServicoAgendar.as_view(), name='prestacao-servico-agendar'),
+     url(r'^relatorio/cliente$', RelatorioClienteFiltro.as_view(), name='relatorio-cliente'),
 
 #    (r'^registrar/$', 'core.views.registrar', {}, 'registrar'),
 #    (r'^redefinir/(?P<chave_ativacao>\S+)/$', 'core.views.redefinir'),
