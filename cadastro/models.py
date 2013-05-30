@@ -3,6 +3,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
+from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from cadastro.utils import generic_get_absolute_url
 
@@ -306,6 +307,18 @@ class StatusPrestacaoServico(models.Model):
       - a) nao tenha agendamento, ou;
       - b) tenha um agendamento "realizado=false E Cancelado=true"
     """
+    NAO_AGENDADO='NAO_AGENDADO'
+    REALIZADO='REALIZADO'
+    CANCELADO='CANCELADO'
+    AGENDADO='AGENDADO'
+
+    cache={
+        NAO_AGENDADO:None,
+        REALIZADO:None,
+        CANCELADO:None,
+        AGENDADO:None,
+        }
+
     class Meta:
         verbose_name = 'Status Prestacao Servico'
         verbose_name_plural = 'Status Prestacao Servico'
@@ -317,6 +330,12 @@ class StatusPrestacaoServico(models.Model):
 
     def __unicode__(self):
         return self.descricao
+
+    @staticmethod
+    def getStatusPrestacaoServicoInstance(descricao_curta):
+        if StatusPrestacaoServico.cache[descricao_curta] is None:
+            StatusPrestacaoServico.cache[descricao_curta] = get_object_or_404(StatusPrestacaoServico, descricao_curta=descricao_curta)
+        return StatusPrestacaoServico.cache[descricao_curta]
 
     def get_absolute_url(self, return_type=None):
         return generic_get_absolute_url(self, return_type)
@@ -351,6 +370,8 @@ class PrestacaoServico(models.Model):
     class Meta:
         verbose_name = 'Prestacao Servico'
         verbose_name_plural = 'Prestacoes de Servicos'
+    SERVICO='SERVICO'
+    PACOTE='PACOTE'
 
     status = models.ForeignKey(StatusPrestacaoServico)
     horario = models.ForeignKey(HorarioDisponivelFuncionario, null=True, blank=True)
@@ -361,15 +382,91 @@ class PrestacaoServico(models.Model):
         super(PrestacaoServico, self).__init__(*args, **kwargs)
         self.obj_filho = None
 
+    AGENDAR_SUCESSO=0
+    AGENDAR_ERRO_HORARIO=1
+    AGENDAR_ERRO_PRESTACAO=2
+    @staticmethod
+    def agendar(horario_funcionario, prestacao_servico):
+        """
+        Agenda um horario de um funcionario para uma prestacao de servico de um cliente.
+        Muda o status de NAO_AGENDADO para AGENDADO
+        Ocupa o horario do funcionario
+        RETURN_CODES:
+            AGENDAR_SUCESSO=0
+            AGENDAR_ERRO_HORARIO=1 -> se o horario nao estiver disponivel
+            AGENDAR_ERRO_PRESTACAO=2 -> se a prestacao nao estiver no status NAO_AGENDADA
+        """
+        if not get_object_or_404(HorarioDisponivelFuncionario, id=horario_funcionario.id).disponivel:
+            return PrestacaoServico.AGENDAR_ERRO_HORARIO
+        if not PrestacaoServico.objects.select_related('status').get(id=prestacao_servico.id).status.descricao_curta == StatusPrestacaoServico.NAO_AGENDADO:
+            return PrestacaoServico.AGENDAR_ERRO_PRESTACAO
+
+        #ajusta a prestacao
+        status_novo = StatusPrestacaoServico.getStatusPrestacaoServicoInstance(StatusPrestacaoServico.AGENDADO)
+        prestacao_servico.status = status_novo
+        prestacao_servico.horario = horario_funcionario
+        prestacao_servico.save()
+        #ajusta horario_disponivel_funcionario
+        horario_funcionario.disponivel = False
+        horario_funcionario.save()
+
+        return PrestacaoServico.AGENDAR_SUCESSO
+
+    @staticmethod
+    def novo_servico(cliente, servico, recepcionista):
+        """
+        Cria um servico uma prestacao de servico (avulsa) para um cliente.
+        Com o status NAO_AGENDADO
+        RETURN_CODES:
+            SUCESSO=Retorna o objeto
+            Erro=eh levantada uma excecao que interrompe o processo.
+        """
+        obj = PrestacaoServicoServico.objects.create(cliente=cliente,
+                                               servico=servico,
+                                               status=StatusPrestacaoServico.getStatusPrestacaoServicoInstance(StatusPrestacaoServico.NAO_AGENDADO),
+                                               discriminator=PrestacaoServico.SERVICO,
+                                               recepcionista=recepcionista,
+                                               )
+
+        return obj
+
+    @staticmethod
+    def novo_pacote(cliente, pacote, recepcionista):
+        """
+        Cria um pacote de servicos e adiciona todos os servicos para o cliente
+        Com o status NAO_AGENDADO
+        RETURN_CODES:
+            SUCESSO=Retorna o pacote
+            Erro=eh levantada uma excecao que interrompe o processo.
+        """
+        #1 adiciona o pacote do cliente
+        pacote_cliente = PacoteServicoCliente.objects.create(cliente=cliente,
+                                            recepcionista=recepcionista,
+                                            pacote_servico=pacote,
+                                            )
+
+        #2 adiciona cada servico do pacote comprado
+        #  busca todos os servicos
+        servico_pacote_servico_list = ServicoPacoteServico.objects.select_related('servico').filter(pacote_servico=pacote)
+        for servico_contido_pacote in servico_pacote_servico_list:
+            #  cria cada servico contido no pacote como uma prestacao de servico nao agendada
+            PrestacaoServicoPacote.objects.create(cliente=cliente,
+                                                  pacoteServico_cliente=pacote_cliente,
+                                                  servico_pacoteservico=servico_contido_pacote,
+                                                  status=StatusPrestacaoServico.getStatusPrestacaoServicoInstance(StatusPrestacaoServico.NAO_AGENDADO),
+                                                  discriminator=PrestacaoServico.PACOTE,
+                                                  recepcionista=recepcionista,
+                                                  )
+        return pacote_cliente
 
     def _get_servico_object(self):
         "Retorna o servico prestado de acordo com o tipo de PrestacaoServico(Servico|Pacote)"
-        if self.discriminator == "PACOTE":
+        if self.discriminator == PrestacaoServico.PACOTE:
             if self.obj_filho is None:
                 self.obj_filho = PrestacaoServicoPacote.objects.get(id=self.id)
 
             return self.obj_filho.servico_pacoteservico.servico
-        elif self.discriminator == "SERVICO":
+        elif self.discriminator == PrestacaoServico.SERVICO:
             if self.obj_filho is None:
                 self.obj_filho = PrestacaoServicoServico.objects.get(id=self.id)
 
@@ -391,12 +488,12 @@ class PrestacaoServico(models.Model):
 
     def _get_pacote_servico(self):
         "Retorna o pacote de servico se pacote, senao retorna - "
-        if self.discriminator == "PACOTE":
+        if self.discriminator == PrestacaoServico.PACOTE:
             if self.obj_filho is None:
                 self.obj_filho = PrestacaoServicoPacote.objects.get(id=self.id)
 
             return '%s' % (self.obj_filho.servico_pacoteservico.pacote_servico.nome)
-        elif self.discriminator == "SERVICO":
+        elif self.discriminator == PrestacaoServico.SERVICO:
             return 'Avulso'
         else:
             return 'ops, isso nao deveria aparecer'
@@ -405,12 +502,12 @@ class PrestacaoServico(models.Model):
 
     def _get_pago(self):
         "Retorna o pacote de servico se pacote, senao retorna - "
-        if self.discriminator == "PACOTE":
+        if self.discriminator == PrestacaoServico.PACOTE:
             if self.obj_filho is None:
                 self.obj_filho = PrestacaoServicoPacote.objects.get(id=self.id)
 
             return '%s' % ("Sim" if self.obj_filho.pacoteServico_cliente.pagamento != None else "Nao")
-        elif self.discriminator == "SERVICO":
+        elif self.discriminator == PrestacaoServico.SERVICO:
             if self.obj_filho is None:
                 self.obj_filho = PrestacaoServicoServico.objects.get(id=self.id)
 
@@ -422,13 +519,13 @@ class PrestacaoServico(models.Model):
 
     def _get_cliente_object(self):
         "Retorna o cliente "
-        if self.discriminator == "PACOTE":
+        if self.discriminator == PrestacaoServico.PACOTE:
             if self.obj_filho is None:
                 self.obj_filho = PrestacaoServicoPacote.objects.get(id=self.id)
 
             return self.obj_filho.pacoteServico_cliente.cliente
 
-        elif self.discriminator == "SERVICO":
+        elif self.discriminator == PrestacaoServico.SERVICO:
             if self.obj_filho is None:
                 self.obj_filho = PrestacaoServicoServico.objects.get(id=self.id)
 

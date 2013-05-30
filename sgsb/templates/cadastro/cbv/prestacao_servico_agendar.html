@@ -50,7 +50,29 @@
                 <div class="form-row field-{{ field.name }}">
                     <div>
                     {{ field.errors }}
-                    {{ field.label_tag }}: {{ field }}
+                    {% if field.name == "horario" %}
+                        <input type="submit" value="Atualizar" name="Atualizar" class="" /><br/><br/>
+
+                        <table id="result_list">
+                        <thead>
+                        <tr >
+                            <th scope="col" style="text-align: center">#</th>
+                            <th scope="col">{{ field.label_tag }}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for horario in field.field.queryset %}
+                        <tr class="{% cycle row1,row2 %}">
+                            <td width="20px" style="text-align: center"><input value="{{horario.id}}" type="radio" name="horario" /></td>
+                            <td width="400px">{{horario}}</td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                        </table>
+                    {% else %}
+                        {{ field.label_tag }}: {{ field }}
+                    {% endif %}
+
                     </div>
                 </div>
             {% endfor %}
@@ -58,7 +80,7 @@
         </fieldset>
 
         <div class="submit-row">
-            <input type="submit" value="Adicionar" class="default" />
+            <input type="submit" value="Agendar" name="Agendar" class="default" />
         </div>
 
         <script type="text/javascript">

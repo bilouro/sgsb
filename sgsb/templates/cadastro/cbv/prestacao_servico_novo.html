@@ -45,16 +45,22 @@
 <form action="{% url prestacao-servico-add %}" method="post" > {% csrf_token %}
 
         <fieldset class="module aligned ">
-
-            {% for field in form %}
-                <div class="form-row field-{{ field.name }}">
-                    <div>
-                    {{ field.errors }}
-                    {{ field.label_tag }}: {{ field }}
-                    </div>
+                <div class="form-row field-{{ form.cliente.name }}">
+                  <div>
+                    {{ form.cliente.errors }}
+                    {{ form.cliente.label_tag }}: {{ form.cliente }}
+                  </div>
                 </div>
-            {% endfor %}
-
+                <div class="form-row field-prestacao_servico">
+                  <div>
+                      Servico/Pacotes:
+                  </div>
+                </div>
+                <div class="form-row field-prestacao_servico">
+                  <div>
+                      {{ form.servicos }}&nbsp;&nbsp;&nbsp;{{ form.pacote_servicos }}
+                  </div>
+                </div>
         </fieldset>
 
         <div class="submit-row">
