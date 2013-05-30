@@ -29,7 +29,7 @@ class RelatorioClienteFiltro(FormView):
                 (7, '7 dias'),
                 (15, '15 dias'),
                 (30, '1 mes'),
-                (30, '45 dias'),
+                (45, '45 dias'),
                 (60, '2 meses'),
                 (90, '3 meses'),
                 (180, '6 meses'),
@@ -41,7 +41,7 @@ class RelatorioClienteFiltro(FormView):
         cadastrado_de = forms.DateField(widget=widgets.AdminDateWidget, required=False)
         cadastrado_ate = forms.DateField( widget=widgets.AdminDateWidget, required=False)
         aniversaria_em = forms.MultipleChoiceField(required=False, choices=MESES_DO_ANO)
-        status = forms.ModelMultipleChoiceField(queryset=StatusCliente.objects.all())
+        status = forms.ModelMultipleChoiceField(queryset=StatusCliente.objects.all(), initial=[1,])
         ultimo_contato_a_mais_de = forms.ChoiceField(required=False, choices=ULTIMO_CONTATO)
         imprime_filtro = forms.BooleanField(initial=True, required=False)
 
@@ -78,13 +78,17 @@ class RelatorioClienteFiltro(FormView):
                 cliente_list = cliente_list.filter(reduce(OR, mes_aniversaria_em_list))
 
         if form.cleaned_data['status']:
-            #se prencheu status busca tosdos funcionarios com os status in (1,2)
+            #se prencheu status busca tosdos clientes com os status in (1,2)
             cliente_list = cliente_list.filter(status__in=form.cleaned_data['status'])
 
         if form.cleaned_data['ultimo_contato_a_mais_de']:
-            #se prencheu cargo busca tosdos funcionarios com os cargos in (1,2)
+            #se prencheu ultimo_contato_a_mais_de
             from datetime import datetime, timedelta
+            #cria o delta de X dias
             a_mais_de=timedelta(days=int(form.cleaned_data['ultimo_contato_a_mais_de']))
+            #diminui AGORA o valor de dias escolhido em ultimo_contato_a_mais_de
+            #se o campo visto_em for MENOR que AGORA(20/05/13 AS 22:30)-7 DIAS
+            #significa q foi visto a menos que 7 dias.
             cliente_list = cliente_list.filter(visto_em__lt=datetime.now()-a_mais_de)
 
         #chama o template resultado enviando o form, a lista_final,
