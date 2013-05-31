@@ -17,6 +17,7 @@ from django.contrib.admin import widgets
 
 class PrestacaoServicoDesagendar(View):
 
+    @transaction.commit_on_success
     def dispatch(self, request, *args, **kwargs):
         #busca o id da prestacao passado na url
         prestacao_servico_id = kwargs['instance_id']
