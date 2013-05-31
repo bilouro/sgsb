@@ -238,7 +238,10 @@ class PrestacaoServicoAdmin(admin.ModelAdmin):
     data_hora.short_description = u'Data e hora'
 
     def acoes(self, obj):
-        return '<a href="/cadastro/prestacaoservico/%s/agendar">agendar</a>' % obj.id
+        agendar = '<a href="/cadastro/prestacaoservico/%s/agendar">agendar</a>' % obj.id
+        desagendar = '<a href="/cadastro/prestacaoservico/%s/desagendar">desagendar</a>' % obj.id
+        return "%s &nbsp; %s" % (agendar, desagendar)
+
 
     acoes.allow_tags = True
     acoes.short_description = u'Acoes'

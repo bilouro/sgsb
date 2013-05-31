@@ -412,6 +412,38 @@ class PrestacaoServico(models.Model):
 
         return PrestacaoServico.AGENDAR_SUCESSO
 
+    DESAGENDAR_SUCESSO=0
+    DESAGENDAR_ERRO_HORARIO=1
+    DESAGENDAR_ERRO_PRESTACAO=2
+    @staticmethod
+    def desagenda(prestacao_servico):
+        """
+        DESAgenda um horario de um funcionario para uma prestacao de servico de um cliente.
+        Muda o status de AGENDADO para NAO_AGENDADO
+        Torna disponivel o horario do funcionario
+        RETURN_CODES:
+            DESAGENDAR_SUCESSO=0
+            DESAGENDAR_ERRO_HORARIO=1 -> se o horario nao estiver ocupado
+            DESAGENDAR_ERRO_PRESTACAO=2 -> se a prestacao nao estiver no status AGENDADA ou se nao tiver horario associado
+        """
+        horario_funcionario = prestacao_servico.horario
+        prestacao_servico_of_db= PrestacaoServico.objects.select_related('status').get(id=prestacao_servico.id)
+        if not prestacao_servico_of_db.status.descricao_curta == StatusPrestacaoServico.AGENDADO or \
+                        prestacao_servico_of_db.horario is None:
+            return PrestacaoServico.DESAGENDAR_ERRO_PRESTACAO
+        if get_object_or_404(HorarioDisponivelFuncionario, id=horario_funcionario.id).disponivel:
+            return PrestacaoServico.DESAGENDAR_ERRO_HORARIO
+
+        horario_funcionario.disponivel = True
+        horario_funcionario.save()
+
+        prestacao_servico.horario = None
+        prestacao_servico.status = StatusPrestacaoServico.getStatusPrestacaoServicoInstance(
+            StatusPrestacaoServico.NAO_AGENDADO)
+        prestacao_servico.save()
+
+        return PrestacaoServico.DESAGENDAR_SUCESSO
+
     @staticmethod
     def novo_servico(cliente, servico, recepcionista):
         """
