@@ -241,7 +241,8 @@ class PrestacaoServicoAdmin(admin.ModelAdmin):
         agendar = '<a href="/cadastro/prestacaoservico/%s/agendar">agendar</a>' % obj.id
         desagendar = '<a href="/cadastro/prestacaoservico/%s/desagendar">desagendar</a>' % obj.id
         realizar = '<a href="/cadastro/prestacaoservico/%s/realizar">realizar</a>' % obj.id
-        return " &nbsp; ".join([agendar, desagendar, realizar])
+        desrealizar = '<a href="/cadastro/prestacaoservico/%s/desrealizar">desfazer_realizado</a>' % obj.id
+        return " &nbsp; ".join([agendar, desagendar, realizar, desrealizar])
 
 
     acoes.allow_tags = True

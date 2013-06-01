@@ -500,6 +500,27 @@ class PrestacaoServico(models.Model):
 
         return PrestacaoServico.REALIZAR_SUCESSO
 
+    DESREALIZAR_SUCESSO=0
+    DESREALIZAR_ERRO_PRESTACAO=1
+    @staticmethod
+    def desrealizar(prestacao_servico):
+        """
+        desrealiza uma prestacao de servico de um cliente.
+        Muda o status de REALIZADO para AGENDADO
+        RETURN_CODES:
+            DESREALIZAR_SUCESSO=0
+            DESREALIZAR_ERRO_PRESTACAO=1 -> se a prestacao nao estiver no status REALIZADO
+        """
+        prestacao_servico_of_db= PrestacaoServico.objects.select_related('status').get(id=prestacao_servico.id)
+        if not prestacao_servico_of_db.status.descricao_curta == StatusPrestacaoServico.REALIZADO:
+            return PrestacaoServico.DESREALIZAR_ERRO_PRESTACAO
+
+        prestacao_servico.status = StatusPrestacaoServico.getStatusPrestacaoServicoInstance(
+            StatusPrestacaoServico.AGENDADO)
+        prestacao_servico.save()
+
+        return PrestacaoServico.DESREALIZAR_SUCESSO
+
     @staticmethod
     def novo_servico(cliente, servico, recepcionista):
         """
