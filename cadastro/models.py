@@ -1,3 +1,5 @@
+import calendar
+import datetime
 from django.db import models
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
@@ -5,6 +7,7 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
+import itertools
 from cadastro.utils import generic_get_absolute_url
 
 ESTADOS = (
@@ -292,6 +295,38 @@ class HorarioDisponivelFuncionario(models.Model):
 
     def get_absolute_url(self, return_type=None):
         return generic_get_absolute_url(self, return_type)
+
+    GERAR_SUCESSO=0
+    GERAR_ERRO_HORARIO=1
+    @staticmethod
+    def gerar_mes(ano, funcionario_list, mes):
+        if HorarioDisponivelFuncionario.objects.filter(data__year=ano).filter(data__month=mes).filter(funcionario__in=funcionario_list).count() > 0:
+            return HorarioDisponivelFuncionario.GERAR_ERRO_HORARIO
+
+        primeiro_dia_mes = datetime.date(ano, mes, 1)
+        ult_dia_mes = calendar.monthrange(ano, mes)[1]
+        de_zero_a_ult_dia_mes_list = range(ult_dia_mes)
+
+        #busca os horarios disponiveis
+        horario_disponivel_list = HorarioDisponivel.objects.all()
+        for horario, funcionario, dias_a_somar in \
+            itertools.product(
+                    horario_disponivel_list,
+                    funcionario_list,
+                    de_zero_a_ult_dia_mes_list):
+
+            hdf = HorarioDisponivelFuncionario()
+            hdf.data = primeiro_dia_mes + \
+                       datetime.timedelta(days=dias_a_somar)
+            hdf.hora = horario
+            hdf.funcionario = funcionario
+            hdf.disponivel = True
+            hdf.save()
+
+        return HorarioDisponivelFuncionario.GERAR_SUCESSO
+
+
+
 
 class StatusPrestacaoServico(models.Model):
     """

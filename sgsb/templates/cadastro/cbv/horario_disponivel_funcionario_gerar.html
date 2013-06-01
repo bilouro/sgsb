@@ -1,0 +1,69 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+
+{% block extrahead %}
+{{ block.super }}
+<link rel="stylesheet" type="text/css" href="/static/admin/css/widgets.css" media="all">
+
+<script type="text/javascript" src="/admin/jsi18n/"></script>
+<script type="text/javascript" src="/static/admin/js/core.js"></script>
+<script type="text/javascript" src="/static/admin/js/admin/RelatedObjectLookups.js"></script>
+<script type="text/javascript" src="/static/admin/js/jquery.js"></script>
+<script type="text/javascript" src="/static/admin/js/jquery.init.js"></script>
+<script type="text/javascript" src="/static/admin/js/actions.js"></script>
+
+<link rel="stylesheet" type="text/css" href="/static/admin/css/forms.css" />
+<!--[if lte IE 7]><link rel="stylesheet" type="text/css" href="/static/admin/css/ie.css" /><![endif]-->
+<script type="text/javascript">window.__admin_media_prefix__ = "/static/admin/";</script>
+
+{{ form.media }}
+{% endblock %}
+
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+<a href="/admin/">Início</a>
+&rsaquo; <a href="/admin/cadastro/">Cadastro</a>
+&rsaquo; Gerar Horario para Funcionarios
+</div>
+{% endblock %}
+
+
+{% block content %}
+<div id="content" class="colM">
+<h1>Gerar Horario para Funcionarios</h1>
+<div id="content-main">
+
+{{ form.non_field_errors }}
+
+<form action="{% url horario-disponivel-funcionario-gerar %}" method="post"> {% csrf_token %}
+
+        <fieldset class="module aligned ">
+
+            {% for field in form %}
+                <div class="form-row field-{{ field.name }}">
+                    <div>
+                    {{ field.errors }}
+                    {{ field.label_tag }}: {{ field }}
+                    </div>
+                </div>
+            {% endfor %}
+
+        </fieldset>
+
+        <div class="submit-row">
+            <input type="submit" value="Gerar Horarios" class="default" />
+        </div>
+
+        <script type="text/javascript">
+        (function($) {
+            var field;
+        })(django.jQuery);
+        </script>
+
+</form>
+</div>
+</div>
+
+{% endblock %}
+
