@@ -20,7 +20,7 @@ usuario: gerente senha: gerente
 - [feito bilouro] cadastro Pacotes de Servicos
 - [feito bilouro] cadastro Servicos
 - [feito bilouro] relatorio funcionarios
-- [pend] cancelar servico
+- [feito bilouro] cancelar servico
 - [pend] cancelar pagamento
 - [feito bilouro] horarios disponiveis
 - [feito bilouro] gerar agenda(horario) para determinado mês para todos os funcionarios
@@ -34,7 +34,6 @@ usuario: secretaria senha: secretaria
 - [feito bilouro] desmarcar servico
 - [feito bilouro] realizar servico
 - [feito bilouro] desrealizar servico
-- [feito bilouro] cancelar servico
 - [feito bilouro] novo servico/novo pacote
 - [pend] realizar pagamento
 - [pend] historico de pagamentos efetuados
