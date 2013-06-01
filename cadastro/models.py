@@ -444,6 +444,27 @@ class PrestacaoServico(models.Model):
 
         return PrestacaoServico.DESAGENDAR_SUCESSO
 
+    REALIZAR_SUCESSO=0
+    REALIZAR_ERRO_PRESTACAO=1
+    @staticmethod
+    def realizar(prestacao_servico):
+        """
+        realiza uma prestacao de servico de um cliente.
+        Muda o status de AGENDADO para REALIZADO
+        RETURN_CODES:
+            REALIZAR_SUCESSO=0
+            REALIZAR_ERRO_PRESTACAO=2 -> se a prestacao nao estiver no status AGENDADA
+        """
+        prestacao_servico_of_db= PrestacaoServico.objects.select_related('status').get(id=prestacao_servico.id)
+        if not prestacao_servico_of_db.status.descricao_curta == StatusPrestacaoServico.AGENDADO:
+            return PrestacaoServico.REALIZAR_ERRO_PRESTACAO
+
+        prestacao_servico.status = StatusPrestacaoServico.getStatusPrestacaoServicoInstance(
+            StatusPrestacaoServico.REALIZADO)
+        prestacao_servico.save()
+
+        return PrestacaoServico.REALIZAR_SUCESSO
+
     @staticmethod
     def novo_servico(cliente, servico, recepcionista):
         """
