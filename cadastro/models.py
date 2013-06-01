@@ -417,6 +417,64 @@ class PrestacaoServico(models.Model):
         super(PrestacaoServico, self).__init__(*args, **kwargs)
         self.obj_filho = None
 
+    CANCELAR_SUCESSO=0
+    CANCELAR_ERRO_PRESTACAO=1
+    CANCELAR_ERRO_TODAS_NAO_AGENDADAS=2
+    CANCELAR_ERRO_JA_PAGO=3
+
+    @staticmethod
+    def cancelar(prestacao_servico):
+        """
+        cancela uma prestacao de servico/pacote de um cliente.
+        o servico deve estar com status NAO_AGENDADO
+        o pacote todos os servicos devem estar com status NAO_AGENDADO
+
+        Muda o status de NAO_AGENDADO para CANCELADO
+        RETURN_CODES:
+            CANCELAR_SUCESSO=0
+            CANCELAR_ERRO_PRESTACAO=1 -> Se o servico com status <> NAO_AGENDADO
+            CANCELAR_ERRO_TODAS_NAO_AGENDADAS=2 -> Se um dos servicos do pacote com status <> NAO_AGENDADO
+            CANCELAR_ERRO_JA_PAGO=3 Se o servico ou o pacote tiver pago nao podera cancelar.
+        """
+        prestacao_servico_of_db= PrestacaoServico.objects.select_related('status').get(id=prestacao_servico.id)
+        if prestacao_servico.discriminator == PrestacaoServico.SERVICO:
+            if not prestacao_servico_of_db.status.descricao_curta == StatusPrestacaoServico.NAO_AGENDADO:
+                return PrestacaoServico.CANCELAR_ERRO_PRESTACAO
+
+            pss = get_object_or_404(PrestacaoServicoServico, id=prestacao_servico.id)
+            if not pss.pagamento is None:
+                return PrestacaoServico.CANCELAR_ERRO_JA_PAGO
+
+        elif prestacao_servico.discriminator == PrestacaoServico.PACOTE:
+            psp_clicada = get_object_or_404(PrestacaoServicoPacote, id=prestacao_servico.id)
+
+            pacoteservico_cliente = psp_clicada.pacoteServico_cliente
+            if not pacoteservico_cliente.pagamento is None:
+                return PrestacaoServico.CANCELAR_ERRO_JA_PAGO
+
+            todas_psp_do_pacote_list = PrestacaoServicoPacote.objects.filter(pacoteServico_cliente=psp_clicada.pacoteServico_cliente)
+            for psp in todas_psp_do_pacote_list:
+                if not psp.status.descricao_curta == StatusPrestacaoServico.NAO_AGENDADO:
+                    return PrestacaoServico.CANCELAR_ERRO_TODAS_NAO_AGENDADAS
+
+
+        if prestacao_servico.discriminator == PrestacaoServico.SERVICO:
+            #todo: depois que tiver feito um status cancelado para o pacote do cliente, passar a mudar o status para cancelado em vez de deletar
+            prestacao_servico.delete()
+
+        elif prestacao_servico.discriminator == PrestacaoServico.PACOTE:
+            psp_clicada = get_object_or_404(PrestacaoServicoPacote, id=prestacao_servico.id)
+            pacote_servico_cliente = psp_clicada.pacoteServico_cliente
+
+            #CANCELAR O PACOTE DO CLIENTE
+            #todo: fazer um status cancelado para o pacote do cliente
+            todas_psp_do_pacote_list = PrestacaoServicoPacote.objects.filter(pacoteServico_cliente=psp_clicada.pacoteServico_cliente)
+            for psp in todas_psp_do_pacote_list:
+                psp.delete()
+            pacote_servico_cliente.delete()
+
+        return PrestacaoServico.CANCELAR_SUCESSO
+
     AGENDAR_SUCESSO=0
     AGENDAR_ERRO_HORARIO=1
     AGENDAR_ERRO_PRESTACAO=2

@@ -34,6 +34,7 @@ usuario: secretaria senha: secretaria
 - [feito bilouro] desmarcar servico
 - [feito bilouro] realizar servico
 - [feito bilouro] desrealizar servico
+- [feito bilouro] cancelar servico
 - [feito bilouro] novo servico/novo pacote
 - [pend] realizar pagamento
 - [pend] historico de pagamentos efetuados
