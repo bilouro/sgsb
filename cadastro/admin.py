@@ -238,11 +238,18 @@ class PrestacaoServicoAdmin(admin.ModelAdmin):
     data_hora.short_description = u'Data e hora'
 
     def acoes(self, obj):
-        agendar = '<a href="/cadastro/prestacaoservico/%s/agendar">agendar</a>' % obj.id
+        cancelar ='<a href="/cadastro/prestacaoservico/%s/cancelar">cancelar</a>' % obj.id
+        agendar ='<a href="/cadastro/prestacaoservico/%s/agendar">agendar</a>' % obj.id
         desagendar = '<a href="/cadastro/prestacaoservico/%s/desagendar">desagendar</a>' % obj.id
         realizar = '<a href="/cadastro/prestacaoservico/%s/realizar">realizar</a>' % obj.id
         desrealizar = '<a href="/cadastro/prestacaoservico/%s/desrealizar">desfazer_realizado</a>' % obj.id
-        return " &nbsp; ".join([agendar, desagendar, realizar, desrealizar])
+        workflow = {
+            StatusPrestacaoServico.getStatusPrestacaoServicoInstance(StatusPrestacaoServico.NAO_AGENDADO):" &nbsp; ".join([agendar,cancelar]),
+            StatusPrestacaoServico.getStatusPrestacaoServicoInstance(StatusPrestacaoServico.AGENDADO):" &nbsp; ".join([desagendar,realizar]),
+            StatusPrestacaoServico.getStatusPrestacaoServicoInstance(StatusPrestacaoServico.REALIZADO):" &nbsp; ".join([desrealizar,]),
+            StatusPrestacaoServico.getStatusPrestacaoServicoInstance(StatusPrestacaoServico.CANCELADO):"",
+         }
+        return workflow[obj.status]
 
 
     acoes.allow_tags = True

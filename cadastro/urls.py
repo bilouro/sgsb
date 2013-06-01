@@ -7,7 +7,6 @@ from cadastro.cbv.prestacaoservico_desrealizar import PrestacaoServicoDesrealiza
 from cadastro.cbv.prestacaoservico_novo import PrestacaoServicoNovo
 from cadastro.cbv.prestacaoservico_realizar import PrestacaoServicoRealizar
 from cadastro.cbv.relatorioclientes import RelatorioClienteFiltro
-from views import PrestacaoServicoListView
 from cbv.relatoriofuncionarios import RelatorioFuncionarioFiltro
 
 urlpatterns = patterns('',
