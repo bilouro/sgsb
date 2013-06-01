@@ -436,6 +436,7 @@ class PrestacaoServico(models.Model):
             CANCELAR_ERRO_TODAS_NAO_AGENDADAS=2 -> Se um dos servicos do pacote com status <> NAO_AGENDADO
             CANCELAR_ERRO_JA_PAGO=3 Se o servico ou o pacote tiver pago nao podera cancelar.
         """
+        cliente = prestacao_servico.cliente_object
         prestacao_servico_of_db= PrestacaoServico.objects.select_related('status').get(id=prestacao_servico.id)
         if prestacao_servico.discriminator == PrestacaoServico.SERVICO:
             if not prestacao_servico_of_db.status.descricao_curta == StatusPrestacaoServico.NAO_AGENDADO:
@@ -473,6 +474,7 @@ class PrestacaoServico(models.Model):
                 psp.delete()
             pacote_servico_cliente.delete()
 
+        cliente.atualiza_visto_em_agora()
         return PrestacaoServico.CANCELAR_SUCESSO
 
     AGENDAR_SUCESSO=0
@@ -503,6 +505,7 @@ class PrestacaoServico(models.Model):
         horario_funcionario.disponivel = False
         horario_funcionario.save()
 
+        prestacao_servico.cliente_object.atualiza_visto_em_agora()
         return PrestacaoServico.AGENDAR_SUCESSO
 
     DESAGENDAR_SUCESSO=0
@@ -535,6 +538,7 @@ class PrestacaoServico(models.Model):
             StatusPrestacaoServico.NAO_AGENDADO)
         prestacao_servico.save()
 
+        prestacao_servico.cliente_object.atualiza_visto_em_agora()
         return PrestacaoServico.DESAGENDAR_SUCESSO
 
     REALIZAR_SUCESSO=0
@@ -556,6 +560,7 @@ class PrestacaoServico(models.Model):
             StatusPrestacaoServico.REALIZADO)
         prestacao_servico.save()
 
+        prestacao_servico.cliente_object.atualiza_visto_em_agora()
         return PrestacaoServico.REALIZAR_SUCESSO
 
     DESREALIZAR_SUCESSO=0
@@ -577,6 +582,7 @@ class PrestacaoServico(models.Model):
             StatusPrestacaoServico.AGENDADO)
         prestacao_servico.save()
 
+        prestacao_servico.cliente_object.atualiza_visto_em_agora()
         return PrestacaoServico.DESREALIZAR_SUCESSO
 
     @staticmethod
@@ -588,14 +594,15 @@ class PrestacaoServico(models.Model):
             SUCESSO=Retorna o objeto
             Erro=eh levantada uma excecao que interrompe o processo.
         """
-        obj = PrestacaoServicoServico.objects.create(cliente=cliente,
+        prestacao_servico = PrestacaoServicoServico.objects.create(cliente=cliente,
                                                servico=servico,
                                                status=StatusPrestacaoServico.getStatusPrestacaoServicoInstance(StatusPrestacaoServico.NAO_AGENDADO),
                                                discriminator=PrestacaoServico.SERVICO,
                                                recepcionista=recepcionista,
                                                )
 
-        return obj
+        prestacao_servico.cliente_object.atualiza_visto_em_agora()
+        return prestacao_servico
 
     @staticmethod
     def novo_pacote(cliente, pacote, recepcionista):
@@ -624,6 +631,7 @@ class PrestacaoServico(models.Model):
                                                   discriminator=PrestacaoServico.PACOTE,
                                                   recepcionista=recepcionista,
                                                   )
+        pacote_cliente.cliente.atualiza_visto_em_agora()
         return pacote_cliente
 
     def _get_servico_object(self):
