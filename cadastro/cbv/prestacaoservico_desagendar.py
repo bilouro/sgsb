@@ -32,7 +32,7 @@ class PrestacaoServicoDesagendar(View):
         elif ret_code == PrestacaoServico.DESAGENDAR_ERRO_HORARIO:
             messages.add_message(request, messages.ERROR, 'O horario: "%s" nao esta mais marcado.' % prestacao_servico.horario)
         elif ret_code == PrestacaoServico.DESAGENDAR_ERRO_PRESTACAO:
-            messages.add_message(request, messages.ERROR, 'Para agendar o servico ele deve estar com o status %s.' % StatusPrestacaoServico.getStatusPrestacaoServicoInstance(StatusPrestacaoServico.AGENDADO))
+            messages.add_message(request, messages.ERROR, 'Para desagendar o servico ele deve estar com o status %s.' % StatusPrestacaoServico.getStatusPrestacaoServicoInstance(StatusPrestacaoServico.AGENDADO))
         else:
             messages.add_message(messages.ERROR, 'Ops, algo errado aconteceu...')
 
