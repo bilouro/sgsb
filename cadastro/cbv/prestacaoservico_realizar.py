@@ -7,7 +7,6 @@ from django.template.context import RequestContext
 from django.utils import timezone
 from django.views.generic.base import RedirectView, View
 from django.views.generic.edit import FormView
-RedirectView
 
 from cadastro.models import *
 from django.contrib import messages
