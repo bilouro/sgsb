@@ -72,11 +72,3 @@ def cria_agenda(request):
     # cria todas de uma só vez
     HorarioDisponivelFuncionario.objects.bulk_create(hdf_list)
 
-class PrestacaoServicoListView(ListView):
-
-    model = PrestacaoServico
-
-    def get_context_data(self, **kwargs):
-        context = super(PrestacaoServicoListView, self).get_context_data(**kwargs)
-        context['now'] = timezone.now()
-        return context
