@@ -6,6 +6,7 @@ from cadastro.cbv.prestacaoservico_cancelar import PrestacaoServicoCancelar
 from cadastro.cbv.prestacaoservico_desagendar import PrestacaoServicoDesagendar
 from cadastro.cbv.prestacaoservico_desrealizar import PrestacaoServicoDesrealizar
 from cadastro.cbv.prestacaoservico_novo import PrestacaoServicoNovo
+from cadastro.cbv.prestacaoservico_pagamento_list import PrestacaoServicoPagamentoList
 from cadastro.cbv.prestacaoservico_realizar import PrestacaoServicoRealizar
 from cadastro.cbv.relatorioclientes import RelatorioClienteFiltro
 from cbv.relatoriofuncionarios import RelatorioFuncionarioFiltro
@@ -23,6 +24,7 @@ urlpatterns = patterns('',
      url(r'^horariodisponivelfuncionario/gerar$', HorarioDisponivelFuncionarioGerar.as_view(), name='horario-disponivel-funcionario-gerar'),
      url(r'^prestacaoservico/(?P<instance_id>\d+)/desrealizar$', PrestacaoServicoDesrealizar.as_view(), name='prestacao-servico-desrealizar'),
      url(r'^prestacaoservico/(?P<instance_id>\d+)/cancelar$', PrestacaoServicoCancelar.as_view(), name='prestacao-servico-cancelar'),
+     url(r'^prestacaoservico/pagamento/$', PrestacaoServicoPagamentoList.as_view(), name='prestacao-servico-pagamento-list'),
 
 #    (r'^registrar/$', 'core.views.registrar', {}, 'registrar'),
 #    (r'^redefinir/(?P<chave_ativacao>\S+)/$', 'core.views.redefinir'),

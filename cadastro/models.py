@@ -388,6 +388,49 @@ class PacoteServicoCliente(models.Model):
     pacote_servico = models.ForeignKey(PacoteServico)
     pagamento = models.ForeignKey('Pagamento', null=True, blank=True)
 
+    def get_ultimo_servico_realizado(self):
+        """
+        retorna o ultimo(cronologicamente) servico com status_list realizado ou agendado, deste pacote, deste cliente.
+        se nao achar, retorna None
+        """
+        prestacao_list = PrestacaoServicoPacote.objects.filter(pacoteServico_cliente=self)
+        prestacao_list = prestacao_list.filter(status__in=[StatusPrestacaoServico.getStatusPrestacaoServicoInstance(StatusPrestacaoServico.REALIZADO),
+                                                           StatusPrestacaoServico.getStatusPrestacaoServicoInstance(StatusPrestacaoServico.AGENDADO)]) \
+                                       .order_by('-horario__data', '-horario__hora__hora')
+
+        return prestacao_list[0] if len(prestacao_list)>0 else None
+
+    ultimo_servico_realizado = property(get_ultimo_servico_realizado)
+
+    def get_status_servicos(self):
+        """
+        retorna um dicionario com a chave o STATUS e o valor count de servicos neste status
+        Use pacote_servico_cliente.get_status_servicos()[StatusPrestacaoServico.REALIZADO]
+        Use pacote_servico_cliente.get_status_servicos()['total'] para buscar o total de servicos
+        """
+        status = {}
+        todas_psp_do_pacote_list = PrestacaoServicoPacote.objects.filter(pacoteServico_cliente=self)
+        status['total'] = todas_psp_do_pacote_list.count()
+        for s in StatusPrestacaoServico.objects.all():
+            status[s.descricao_curta] = todas_psp_do_pacote_list.filter(status__descricao_curta__in=[s.descricao_curta]).count()
+        return status
+
+    status_servicos = property(get_status_servicos)
+
+    def _get_realizado(self):
+        total = self.get_status_servicos()['total']
+        realizado = self.get_status_servicos()[StatusPrestacaoServico.REALIZADO]
+        if realizado == 0:
+            return False
+        else:
+            if realizado == total:
+                return True
+            else:
+                return None #significa que foi parcialmente
+
+    realizado = property(_get_realizado)
+
+
     def __unicode__(self):
         return "%s - %s" % (self.cliente.nome, self.pacote_servico.nome)
 
@@ -754,6 +797,11 @@ class PrestacaoServicoServico(PrestacaoServico):
     cliente = models.ForeignKey(Cliente)
     servico = models.ForeignKey(Servico)
     pagamento = models.ForeignKey('Pagamento', null=True, blank=True)
+
+    def _get_realizado(self):
+        return self.status == StatusPrestacaoServico.getStatusPrestacaoServicoInstance(StatusPrestacaoServico.REALIZADO)
+
+    realizado = property(_get_realizado)
 
     def __unicode__(self):
         return "%s %s" % (self.servico.nome, self.cliente.nome)
