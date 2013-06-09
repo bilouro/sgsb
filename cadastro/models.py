@@ -12,8 +12,34 @@ import itertools
 from cadastro.utils import generic_get_absolute_url
 
 ESTADOS = (
+    ('AC', 'Acre'),
+    ('AL', 'Alagoas'),
+    ('AP', 'Amapa'),
+    ('AM', 'Amazonas'),
+    ('BA', 'Bahia'),
+    ('CE', 'Ceara'),
+    ('DF', 'Distrito Federal'),
+    ('ES', 'Espirito Santo'),
+    ('GO', 'Goias'),
+    ('MA', 'Maranhao'),
+    ('MT', 'Mato Grosso'),
+    ('MS', 'Mato Grosso do Sul'),
+    ('MG', 'Minas Gerais'),
+    ('PA', 'Para'),
+    ('ES', 'Espirito Santos'),
+    ('PB', 'Paraiba'),
+    ('PR', 'Parana'),
+    ('PE', 'Pernambuco'),
+    ('PI', 'Piaui'),
     ('RJ', 'Rio de Janeiro'),
+    ('RN', 'Rio Grande do Norte'),
+    ('RS', 'Rio Grande do Sul'),
+    ('RO', 'Rondonia'),
+    ('RR', 'Roraima'),
+    ('SC', 'Santa Catarina'),
+    ('SE', 'Sergipe'),
     ('SP', 'Sao Paulo'),
+    ('TO', 'Tocantins'),
 )
 class Pessoa(models.Model):
     """
