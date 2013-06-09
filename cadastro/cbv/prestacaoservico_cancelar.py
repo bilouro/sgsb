@@ -1,3 +1,4 @@
+# -*- coding: UTF-8 -*-
 from django import forms
 from django.db import transaction
 from django.db.models.query_utils import Q

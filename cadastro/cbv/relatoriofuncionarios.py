@@ -1,3 +1,4 @@
+# -*- coding: UTF-8 -*-
 from django import forms
 from django.db.models.query_utils import Q
 from django.shortcuts import render_to_response

@@ -1,3 +1,4 @@
+# -*- coding: UTF-8 -*-
 import calendar
 import datetime
 from django.db import models
