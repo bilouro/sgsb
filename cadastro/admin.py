@@ -11,7 +11,12 @@ from cadastro.models import *
 
 
 class ClienteAdmin(admin.ModelAdmin):
-    list_display = ('nome', 'telefone', 'email', 'cpf', 'identidade', 'orgao_expedidor', 'data_nascimento', 'data_cadastro', 'status')
+    fieldsets = (
+        ('Dados Pessoais', {
+            'fields': (('nome', 'data_nascimento'), ('cpf', 'identidade', 'orgao_expedidor'), ('telefone', 'email'), ('logradouro', 'numero'), ('complemento', 'bairro'), ('cidade', 'estado', 'cep'))
+        }),
+    )
+    list_display = ('nome', 'telefone', 'email', 'data_nascimento', 'data_cadastro', 'status')
     date_hierarchy = 'data_cadastro'
     search_fields = ['nome', 'logradouro', 'telefone', 'email', 'cpf', 'identidade', 'orgao_expedidor', ] #,'turma__nome', 'palavras_chave']
     #ordering = ('-dia',)
@@ -50,7 +55,12 @@ class EspecialidadeFuncionarioInline(admin.TabularInline):
     model = EspecialidadeFuncionario
     extra = 1
 class FuncionarioAdmin(admin.ModelAdmin):
-    list_display = ('nome', 'telefone', 'email', 'cpf', 'identidade', 'orgao_expedidor', 'data_nascimento', 'data_admissao', 'status', 'cargo')
+    fieldsets = (
+        ('Dados Pessoais', {
+            'fields': (('nome', 'data_nascimento'), ('cpf', 'identidade', 'orgao_expedidor'), ('telefone', 'email'), ('logradouro', 'numero'), ('complemento', 'bairro'), ('cidade', 'estado', 'cep'))
+        }),
+    )
+    list_display = ('nome', 'telefone', 'email', 'data_admissao', 'status', 'cargo')
     date_hierarchy = 'data_admissao'
     search_fields = ['nome', 'logradouro', 'telefone', 'email', 'cpf', 'identidade', 'orgao_expedidor' ] #,'turma__nome', 'palavras_chave']
     #ordering = ('-dia',)
