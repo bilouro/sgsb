@@ -35,11 +35,11 @@ usuario: secretaria senha: secretaria
 - [feito bilouro] realizar servico
 - [feito bilouro] desrealizar servico
 - [feito bilouro] novo servico/novo pacote
-- [pend] realizar pagamento
+- [feito bilouro] realizar pagamento
 - [pend] historico de pagamentos efetuados
 - [pend] relatorio servicos prestados/agendados
 - [pend] relatorio recebimentos
-- [pend] relatorio clientes
+- [carla fazendo] relatorio clientes
 - [pend] relatorio pacotes pendentes
 
 == OUTROS ITENS A FAZER ==
@@ -50,3 +50,4 @@ usuario: secretaria senha: secretaria
 - [meninas fazendo] fazer customização dos fields e grids do admin conforme solicitacao professor
          - (vários na mesma linha -> fiz um exemplo em PESSOA dentro de Admin.py)
          - dados de rg e cpf para frente (pedido professor)
+- [pend] permitir selecionar mais de um profissional no agendamento

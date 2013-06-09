@@ -840,6 +840,41 @@ class Pagamento(models.Model):
     valor = models.DecimalField(max_digits=7,decimal_places=2)
     forma_pagamento = models.ForeignKey(FormaPagamento)
 
+    REALIZAR_PAGAMENTO_SUCESSO=0
+    REALIZAR_PAGAMENTO_ERRO_VALOR=1
+    @staticmethod
+    def realiza_pagamento(cliente, forma_pagamento, recepcionista, pss_list, psc_list, valor_pago):
+
+        #verifica se valor pago eh igual a soma dos servicos/pacotes
+        soma = 0
+        for obj in pss_list:
+            soma += obj.servico.valor
+
+        for obj in psc_list:
+            soma += obj.pacote_servico.valor
+
+        if soma != valor_pago:
+            return Pagamento.REALIZAR_PAGAMENTO_ERRO_VALOR
+
+        #criar o pagemento e associar a cada item da lista
+        pagamento = Pagamento()
+        pagamento.cliente = cliente
+        pagamento.forma_pagamento = forma_pagamento
+        pagamento.recepcionista = recepcionista
+        pagamento.valor = valor_pago
+        pagamento.data_hora = timezone.datetime.now()
+        pagamento.save()
+
+        for obj in pss_list:
+            obj.pagamento = pagamento
+            obj.save()
+
+        for obj in psc_list:
+            obj.pagamento = pagamento
+            obj.save()
+
+        return Pagamento.REALIZAR_PAGAMENTO_SUCESSO
+
     def __unicode__(self):
         return "%s %s (%s)" % (self.cliente.nome, self.valor, self.forma_pagamento.descricao)
 

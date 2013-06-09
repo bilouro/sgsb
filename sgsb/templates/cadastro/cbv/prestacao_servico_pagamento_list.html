@@ -16,6 +16,24 @@
 <!--[if lte IE 7]><link rel="stylesheet" type="text/css" href="/static/admin/css/ie.css" /><![endif]-->
 <script type="text/javascript">window.__admin_media_prefix__ = "/static/admin/";</script>
 
+<script type="text/javascript">
+    function check(obj) {
+        next_val=0;
+         if(obj.checked) {
+             next_val = parseFloat( document.getElementById('id_valor_pago').value ) + parseFloat( obj.getAttribute('valor').replace(',','.') );
+             document.getElementById('id_valor_pago').value = next_val.toFixed(2);
+             //window.alert( next_val );
+         } else {
+             next_val = parseFloat( document.getElementById('id_valor_pago').value ) - parseFloat( obj.getAttribute('valor').replace(',','.')) ;
+             document.getElementById('id_valor_pago').value = next_val.toFixed(2);
+             //window.alert( next_val );
+         }
+        label_text = 'R$ ' + next_val.toFixed(2);
+        document.getElementById('id_label_total').innerHTML = label_text.replace('.',',');
+
+    };
+</script>
+
 {{ form.media }}
 {% endblock %}
 
@@ -44,18 +62,15 @@
 {% endif %}
 
 <form action="{% url prestacao-servico-pagamento-list %}" method="post" > {% csrf_token %}
+{{ form.valor_pago }}
 
         <fieldset class="module aligned ">
-
-            {% for field in form %}
-                <div class="form-row field-{{ field.name }}">
-                    <div>
-                    {{ field.errors }}
-                    {{ field.label_tag }}: {{ field }} &nbsp;   <input type="submit" value="Buscar Servicos e Pacotes nao pagos pelo cliente" name="Buscar" class="default" />
-                    </div>
+            <div class="form-row field-{{ form.cliente.name }}">
+                <div>
+                {{ form.cliente.errors }}
+                {{ form.cliente.label_tag }}: {{ form.cliente }} &nbsp;   <input type="submit" value="Buscar Servicos e Pacotes nao pagos pelo cliente" name="Buscar" class="default" />
                 </div>
-            {% endfor %}
-
+            </div>
         </fieldset>
 
 <div class="module filtered" id="changelist">
@@ -72,21 +87,20 @@
 </tr>
 </thead>
 <tbody>
-{% for f in pss_list %}
+{% for pss in pss_list %}
 <tr class="{% cycle row1,row2 %}">
-    <td width="10px"><input type="checkbox"/></td>
-    <td width="150px">{{ f.servico }}</td>
-    <td width="200px">{{ f.status }}</td>
-    <td width="200px">{{f.horario.data}} {{f.horario.hora.hora}}</td>
-    <td width="100px">{{ f.servico.valor }}</td>
-    <td width="100px">{{ f.realizado|yesno:"Sim,Nao" }}</td>
+    <td width="10px"><input type="checkbox" name="pss" onclick="check(this)" value="{{ pss.id }}" valor="{{ pss.servico.valor }}" {% if pss in pss_selected_list %}checked{% endif %}/></td>
+    <td width="150px">{{ pss.servico }}</td>
+    <td width="200px">{{ pss.status }}</td>
+    <td width="200px">{{ pss.horario.data}} {{ pss.horario.hora.hora }}</td>
+    <td width="100px">{{ pss.servico.valor }}</td>
+    <td width="100px">{{ pss.realizado|yesno:"Sim,Nao" }}</td>
     <td width="100px">cancelar_pagamento</td>
 </tr>
 {% endfor %}
 </tbody>
 </table>
 </div>
-    <br/>
     <br/>
 <div class="module filtered" id="changelist">
 <table id="result_list">
@@ -105,7 +119,7 @@
 <tbody>
 {% for psc in psc_list %}
 <tr class="{% cycle row1,row2 %}">
-    <td width="10px"><input type="checkbox"/></td>
+    <td width="10px"><input type="checkbox" name="psc" onclick="check(this)" value="{{ psc.id }}" valor="{{ psc.pacote_servico.valor }}" {% if psc in psc_selected_list %}checked{% endif %}/></td>
     <td width="150px">{{ psc.pacote_servico }}</td>
     {% if psc.ultimo_servico_realizado %}
         <td width="200px">{{ psc.ultimo_servico_realizado.servico_pacoteservico }}</td>
@@ -123,8 +137,28 @@
 </table>
 </div>
 
+<br/>
+
+{% if form.forma_pagamento  %}
+<fieldset class="module aligned ">
+    <div class="form-row field-{{ form.forma_pagamento.name }}">
+        <div>
+        {{ form.forma_pagamento.errors }}
+        {{ form.forma_pagamento.label_tag }}: {{ form.forma_pagamento }}
+        </div>
+    </div>
+
+    <div class="form-row field-valor-total">
+        <div>
+        <label for="id_label_total">Valor Pagar</label>: <span id="id_label_total">R$ {{ form.valor_pago.value }}</span>
+        </div>
+    </div>
+</fieldset>
+{% endif %}
+
+
         <div class="submit-row">
-            <input type="submit" value="Pagar os Selecionados" name="Buscar" class="default" />
+            <input type="submit" value="Pagar os Selecionados" name="Pagar" class="default" />
         </div>
 
         <script type="text/javascript">
