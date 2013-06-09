@@ -873,6 +873,8 @@ class Pagamento(models.Model):
             obj.pagamento = pagamento
             obj.save()
 
+        cliente.atualiza_visto_em_agora()
+
         return Pagamento.REALIZAR_PAGAMENTO_SUCESSO
 
     def __unicode__(self):
