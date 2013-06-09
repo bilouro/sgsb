@@ -92,8 +92,8 @@
     <td width="150px">{{ pss.servico }}</td>
     <td width="200px">{{ pss.status }}</td>
     <td width="200px">{{ pss.horario.data}} {{ pss.horario.hora.hora }}</td>
-    <td width="100px">{{ pss.servico.valor }}</td>
-    <td width="100px">{{ pss.realizado|yesno:"Sim,Nao" }}</td>
+    <td width="100px" style="text-align: right">R$ {{ pss.servico.valor|floatformat:2 }}</td>
+    <td width="100px" style="text-align: center">{{ pss.realizado|yesno:"Sim,Nao" }}</td>
 </tr>
 {% endfor %}
 </tbody>
@@ -124,8 +124,8 @@
         <td width="200px">Serviço não agendado</td>
     {% endif%}
     <td width="200px">{{ psc.ultimo_servico_realizado.horario.data}} {{psc.ultimo_servico_realizado.horario.hora.hora}}</td>
-    <td width="100px">{{ psc.pacote_servico.valor }}</td>
-    <td width="100px">{{ psc.realizado|yesno:"Sim,Nao,Parcialmente" }}</td>
+    <td width="100px" style="text-align: right">R$ {{ psc.pacote_servico.valor|floatformat:2 }}</td>
+    <td width="100px" style="text-align: center">{{ psc.realizado|yesno:"Sim,Nao,Parcialmente" }}</td>
     <td width="200px">{{ psc.status_servicos.NAO_AGENDADO }} / {{ psc.status_servicos.AGENDADO }} / {{ psc.status_servicos.REALIZADO }}</td>
 </tr>
 {% endfor %}
@@ -166,6 +166,15 @@
 
 </div>
 </div>
+<script type="text/javascript">
+    function atualiza_valor_label() {
+        next_val = parseFloat( document.getElementById('id_valor_pago').value );
+        label_text = 'R$ ' + next_val.toFixed(2);
+        document.getElementById('id_label_total').innerHTML = label_text.replace('.',',');
+
+    }
+    atualiza_valor_label();
+</script>
 
 
 {% endblock %}
