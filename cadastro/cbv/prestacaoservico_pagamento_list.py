@@ -77,7 +77,7 @@ class PrestacaoServicoPagamentoList(FormView):
                     ret_code = Pagamento.realiza_pagamento(cliente, forma_pagamento, recepcionista, pss_selected_list, psc_selected_list, valor_pago)
                 #avalia retorno
                 if ret_code == Pagamento.REALIZAR_PAGAMENTO_SUCESSO:
-                    messages.add_message(self.request, messages.SUCCESS, 'Pagamento efetuado para %s: R$%d %s' % (cliente, valor_pago, forma_pagamento))
+                    messages.add_message(self.request, messages.SUCCESS, 'Pagamento efetuado para %s: R$ %.2f %s' % (cliente, valor_pago, forma_pagamento))
                 elif ret_code == Pagamento.REALIZAR_PAGAMENTO_ERRO_VALOR:
                     messages.add_message(self.request, messages.ERROR, 'Houve divergencia nos valores, pagamento nao realizado')
 
