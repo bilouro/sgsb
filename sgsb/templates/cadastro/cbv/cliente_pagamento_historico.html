@@ -1,0 +1,99 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+
+{% block extrahead %}
+{{ block.super }}
+<link rel="stylesheet" type="text/css" href="/static/admin/css/widgets.css" media="all">
+
+<script type="text/javascript" src="/admin/jsi18n/"></script>
+<script type="text/javascript" src="/static/admin/js/core.js"></script>
+<script type="text/javascript" src="/static/admin/js/admin/RelatedObjectLookups.js"></script>
+<script type="text/javascript" src="/static/admin/js/jquery.js"></script>
+<script type="text/javascript" src="/static/admin/js/jquery.init.js"></script>
+<script type="text/javascript" src="/static/admin/js/actions.js"></script>
+
+<link rel="stylesheet" type="text/css" href="/static/admin/css/forms.css" />
+<!--[if lte IE 7]><link rel="stylesheet" type="text/css" href="/static/admin/css/ie.css" /><![endif]-->
+<script type="text/javascript">window.__admin_media_prefix__ = "/static/admin/";</script>
+
+{{ form.media }}
+{% endblock %}
+
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+<a href="/admin/">Início</a>
+&rsaquo; <a href="/admin/cadastro/">Cadastro</a>
+&rsaquo; <a href="/cadastro/prestacaoservico/pagamento/">Pagamento</a>
+&rsaquo; Histórico
+</div>
+{% endblock %}
+
+
+{% block content %}
+<div id="content" class="colM">
+<h1>Histórico</h1>
+<div id="content-main">
+
+{% if form.subject.errors %}
+    <ol>
+    {% for error in form.subject.errors %}
+        <li><strong>{{ error|escape }}</strong></li>
+    {% endfor %}
+    </ol>
+{% endif %}
+
+<form action="{% url cliente-pagamento-historico form.cliente.value %}" method="post" > {% csrf_token %}
+
+        <fieldset class="module aligned ">
+            <div class="form-row field-{{ form.cliente.name }}">
+                <div class="field-box field-{{ form.cliente.name }}">
+                    {{ form.cliente.errors }}
+                    {{ form.cliente.label_tag }}: {{ form.cliente }}
+                </div>
+
+                <div class="field-box field-historico">
+                    <input type="submit" value="Buscar histórico" name="Historico" class="default" />
+                </div>
+            </div>
+        </fieldset>
+
+<div class="module filtered" id="changelist">
+<table id="result_list">
+<thead>
+<tr >
+    <th scope="col">Data</th>
+    <th scope="col">Forma Pagamento</th>
+    <th scope="col">Valor</th>
+    <th scope="col">Itens Pagos</th>
+    <th scope="col">Responsável</th>
+    <th scope="col">Ações</th>
+</tr>
+</thead>
+<tbody>
+{% for obj in object_list %}
+<tr class="{% cycle row1,row2 %}">
+    <td width="200px" style="text-align: center">{{ obj.data_hora }}</td>
+    <td width="150px" style="text-align: center">{{ obj.forma_pagamento }}</td>
+    <td width="100px" style="text-align: right">R$ {{ obj.valor|floatformat:2 }}</td>
+    <td width="50%" >{{ obj.itens_pagos }}</td>
+    <td width="100px" >{{ obj.recepcionista }}</td>
+    <td width="100px" style="text-align: center"><a href="#/cadastro/cliente/12/pagamento/1/cancelar">Cancelar</a></td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+        <script type="text/javascript">
+        (function($) {
+            var field;
+        })(django.jQuery);
+        </script>
+</form>
+
+</div>
+</div>
+
+
+{% endblock %}
+

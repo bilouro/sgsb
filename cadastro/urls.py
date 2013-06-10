@@ -1,13 +1,14 @@
 # -*- coding: UTF-8 -*-
 from django.conf.urls import *
 from django.contrib.auth.views import login, logout
+from cadastro.cbv.cliente_pagamento_historico import ClientePagamentoHistorico
 from cadastro.cbv.horariodisponivelfuncionario_gerar import HorarioDisponivelFuncionarioGerar
 from cadastro.cbv.prestacaoservico_agendar import PrestacaoServicoAgendar
 from cadastro.cbv.prestacaoservico_cancelar import PrestacaoServicoCancelar
 from cadastro.cbv.prestacaoservico_desagendar import PrestacaoServicoDesagendar
 from cadastro.cbv.prestacaoservico_desrealizar import PrestacaoServicoDesrealizar
 from cadastro.cbv.prestacaoservico_novo import PrestacaoServicoNovo
-from cadastro.cbv.prestacaoservico_pagamento_list import PrestacaoServicoPagamentoList
+from cadastro.cbv.prestacaoservico_pagamento import PrestacaoServicoPagamentoList
 from cadastro.cbv.prestacaoservico_realizar import PrestacaoServicoRealizar
 from cadastro.cbv.relatorioclientes import RelatorioClienteFiltro
 from cbv.relatoriofuncionarios import RelatorioFuncionarioFiltro
@@ -26,6 +27,7 @@ urlpatterns = patterns('',
      url(r'^prestacaoservico/(?P<instance_id>\d+)/desrealizar$', PrestacaoServicoDesrealizar.as_view(), name='prestacao-servico-desrealizar'),
      url(r'^prestacaoservico/(?P<instance_id>\d+)/cancelar$', PrestacaoServicoCancelar.as_view(), name='prestacao-servico-cancelar'),
      url(r'^prestacaoservico/pagamento/$', PrestacaoServicoPagamentoList.as_view(), name='prestacao-servico-pagamento-list'),
+     url(r'^cliente/(?P<instance_id>\d+)/pagamento/historico$', ClientePagamentoHistorico.as_view(), name='cliente-pagamento-historico'),
 
 #    (r'^registrar/$', 'core.views.registrar', {}, 'registrar'),
 #    (r'^redefinir/(?P<chave_ativacao>\S+)/$', 'core.views.redefinir'),
