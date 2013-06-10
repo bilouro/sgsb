@@ -80,7 +80,6 @@ class PrestacaoServicoPagamentoList(FormView):
                 #avalia retorno
                 if ret_code == Pagamento.REALIZAR_PAGAMENTO_SUCESSO:
                     messages.add_message(self.request, messages.SUCCESS, 'Pagamento efetuado para %s: R$ %.2f %s' % (cliente, valor_pago, forma_pagamento))
-                    valor_pago = 0
                 elif ret_code == Pagamento.REALIZAR_PAGAMENTO_ERRO_VALOR:
                     messages.add_message(self.request, messages.ERROR, 'Houve divergencia nos valores, pagamento nao realizado')
                 elif ret_code == Pagamento.REALIZAR_PAGAMENTO_ERRO_JA_PAGO:
@@ -88,7 +87,8 @@ class PrestacaoServicoPagamentoList(FormView):
                 elif ret_code == Pagamento.REALIZAR_PAGAMENTO_ERRO_NENHUM_ITEM_ENVIADO:
                     messages.add_message(self.request, messages.ERROR, 'Selecione ao menos um item para pagar')
 
-                form = PrestacaoServicoPagamentoList.FormaPagamentoForm(initial={'cliente':cliente, 'valor_pago':valor_pago})
+                pss_selected_list, psc_selected_list = 0, 0
+                form = PrestacaoServicoPagamentoList.FormaPagamentoForm(initial={'cliente':cliente, 'valor_pago':0})
         elif self.request.POST.get('Buscar', None):
             form = PrestacaoServicoPagamentoList.CheckBoxForm(form.data)
             if form.is_valid():
