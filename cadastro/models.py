@@ -867,18 +867,47 @@ class Pagamento(models.Model):
     valor = models.DecimalField(max_digits=7,decimal_places=2)
     forma_pagamento = models.ForeignKey(FormaPagamento)
 
+    def pacote_set(self):
+        return PacoteServicoCliente.objects.filter(pagamento=self)
+
+    def servico_set(self):
+        return PrestacaoServicoServico.objects.filter(pagamento=self)
+
+    def _itens_pagos(self):
+        "Retorna os itens pagos separados por ponto e virgula"
+        lista_retorno = []
+
+        pacote = self.pacote_set()
+        if len(pacote)>0:
+            lista_retorno.append("; ".join([p.pacote_servico.descricao for p in pacote]))
+
+        servico = self.servico_set()
+        if len(servico)>0:
+            lista_retorno.append("; ".join([p.servico.descricao for p in servico]))
+
+        return '; '.join(lista_retorno)
+    itens_pagos = property(_itens_pagos)
+
     REALIZAR_PAGAMENTO_SUCESSO=0
     REALIZAR_PAGAMENTO_ERRO_VALOR=1
+    REALIZAR_PAGAMENTO_ERRO_JA_PAGO=2
+    REALIZAR_PAGAMENTO_ERRO_NENHUM_ITEM_ENVIADO=3
     @staticmethod
     def realiza_pagamento(cliente, forma_pagamento, recepcionista, pss_list, psc_list, valor_pago):
+        if (pss_list is None or len(pss_list)==0) and (psc_list is None or len(psc_list)==0):
+            return Pagamento.REALIZAR_PAGAMENTO_ERRO_NENHUM_ITEM_ENVIADO
 
         #verifica se valor pago eh igual a soma dos servicos/pacotes
         soma = 0
         for obj in pss_list:
             soma += obj.servico.valor
+            if not obj.pagamento is None:
+                return Pagamento.REALIZAR_PAGAMENTO_ERRO_JA_PAGO
 
         for obj in psc_list:
             soma += obj.pacote_servico.valor
+            if not obj.pagamento is None:
+                return Pagamento.REALIZAR_PAGAMENTO_ERRO_JA_PAGO
 
         if soma != valor_pago:
             return Pagamento.REALIZAR_PAGAMENTO_ERRO_VALOR
