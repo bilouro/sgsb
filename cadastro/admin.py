@@ -249,19 +249,18 @@ class PrestacaoServicoAdmin(admin.ModelAdmin):
     data_hora.short_description = u'Data e hora'
 
     def acoes(self, obj):
-        cancelar ='<a href="/cadastro/prestacaoservico/%s/cancelar">cancelar</a>' % obj.id
+        cancelar ='<a href="/cadastro/prestacaoservico/%s/cancelar">remover</a>' % obj.id
         agendar ='<a href="/cadastro/prestacaoservico/%s/agendar">agendar</a>' % obj.id
-        desagendar = '<a href="/cadastro/prestacaoservico/%s/desagendar">desagendar</a>' % obj.id
+        desagendar = '<a href="/cadastro/prestacaoservico/%s/desagendar">cancelar</a>' % obj.id
         realizar = '<a href="/cadastro/prestacaoservico/%s/realizar">realizar</a>' % obj.id
-        desrealizar = '<a href="/cadastro/prestacaoservico/%s/desrealizar">desfazer_realizado</a>' % obj.id
+        desrealizar = '<a href="/cadastro/prestacaoservico/%s/desrealizar">cancelar</a>' % obj.id
         workflow = {
-            StatusPrestacaoServico.getStatusPrestacaoServicoInstance(StatusPrestacaoServico.NAO_AGENDADO):" &nbsp; ".join([agendar,cancelar]),
+            StatusPrestacaoServico.getStatusPrestacaoServicoInstance(StatusPrestacaoServico.NAO_AGENDADO):" &nbsp; ".join([cancelar,agendar]),
             StatusPrestacaoServico.getStatusPrestacaoServicoInstance(StatusPrestacaoServico.AGENDADO):" &nbsp; ".join([desagendar,realizar]),
             StatusPrestacaoServico.getStatusPrestacaoServicoInstance(StatusPrestacaoServico.REALIZADO):" &nbsp; ".join([desrealizar,]),
             StatusPrestacaoServico.getStatusPrestacaoServicoInstance(StatusPrestacaoServico.CANCELADO):"",
          }
         return workflow[obj.status]
-
 
     acoes.allow_tags = True
     acoes.short_description = u'Acoes'
