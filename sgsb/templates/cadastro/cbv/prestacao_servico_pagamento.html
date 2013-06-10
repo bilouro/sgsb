@@ -66,9 +66,16 @@
 
         <fieldset class="module aligned ">
             <div class="form-row field-{{ form.cliente.name }}">
-                <div>
-                {{ form.cliente.errors }}
-                {{ form.cliente.label_tag }}: {{ form.cliente }} &nbsp;   <input type="submit" value="Buscar Servicos e Pacotes nao pagos pelo cliente" name="Buscar" class="default" />
+                <div class="field-box field-{{ form.cliente.name }}">
+                    {{ form.cliente.errors }}
+                    {{ form.cliente.label_tag }}: {{ form.cliente }} &nbsp;
+                </div>
+
+                <div class="field-box field-Buscar">
+                    <input type="submit" value="Buscar Serviços e Pacotes não pagos pelo cliente" name="Buscar" class="default" />
+                </div>
+                <div class="field-box field-historico">
+                    <input type="submit" value="Histórico de Pagamentos" name="Historico" class="default" />
                 </div>
             </div>
         </fieldset>
