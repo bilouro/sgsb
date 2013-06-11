@@ -938,7 +938,7 @@ class Pagamento(models.Model):
     CANCELAR_PAGAMENTO_ERRO_MAIS_QUE_UM=2
     CANCELAR_PAGAMENTO_ERRO_NENHUM_ITEM=3
     @staticmethod
-    def cancelar_pagamento(cliente, pagamento_id):
+    def cancelar_pagamento(pagamento_id):
         pagamento_list = Pagamento.objects.filter(id=pagamento_id)
         #verifica se existe o pagamento
         if pagamento_list is None or len(pagamento_list) == 0:
@@ -952,6 +952,7 @@ class Pagamento(models.Model):
 
         #usado para verificar se existe algum item associado ao pagamento
         pagamento_tem_algum_item = False
+        cliente = pagamento.cliente
 
         #buscar todos as prestacao_servico_servico e remove o pagamento
         servico_list = pagamento.servico_set()

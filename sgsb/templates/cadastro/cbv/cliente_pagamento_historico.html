@@ -78,7 +78,7 @@
     <td width="100px" style="text-align: right">R$ {{ obj.valor|floatformat:2 }}</td>
     <td width="50%" >{{ obj.itens_pagos }}</td>
     <td width="100px" >{{ obj.recepcionista }}</td>
-    <td width="100px" style="text-align: center"><a href="#/cadastro/cliente/12/pagamento/1/cancelar">Cancelar</a></td>
+    <td width="100px" style="text-align: center"><a href="{% url cliente-pagamento-cancelar form.cliente.value obj.id %}">Cancelar</a></td>
 </tr>
 {% endfor %}
 </tbody>
