@@ -933,6 +933,53 @@ class Pagamento(models.Model):
 
         return Pagamento.REALIZAR_PAGAMENTO_SUCESSO
 
+    CANCELAR_PAGAMENTO_SUCESSO=0
+    CANCELAR_PAGAMENTO_ERRO_PAGAMENTO_NAO_EXISTE=1
+    CANCELAR_PAGAMENTO_ERRO_MAIS_QUE_UM=2
+    CANCELAR_PAGAMENTO_ERRO_NENHUM_ITEM=3
+    @staticmethod
+    def cancelar_pagamento(cliente, pagamento_id):
+        pagamento_list = Pagamento.objects.filter(id=pagamento_id)
+        #verifica se existe o pagamento
+        if pagamento_list is None or len(pagamento_list) == 0:
+            return Pagamento.CANCELAR_PAGAMENTO_ERRO_PAGAMENTO_NAO_EXISTE
+        elif len(pagamento_list) > 1:
+            #verifica se tem mais que um
+            return Pagamento.CANCELAR_PAGAMENTO_ERRO_MAIS_QUE_UM
+        else:
+            #soh existe um
+            pagamento = pagamento_list[0]
+
+        #usado para verificar se existe algum item associado ao pagamento
+        pagamento_tem_algum_item = False
+
+        #buscar todos as prestacao_servico_servico e remove o pagamento
+        servico_list = pagamento.servico_set()
+        if len(servico_list)>0:
+            servico_list.update(pagamento=None)
+            #se encontrou algum item associado ao pagamento
+            pagamento_tem_algum_item = True
+
+        #buscar todos as pacote_servico_cliente e remove o pagamento
+        pacote_list = pagamento.pacote_set()
+        if len(pacote_list)>0:
+            pacote_list.update(pagamento=None)
+            #se encontrou algum item associado ao pagamento
+            pagamento_tem_algum_item = True
+
+        #se nao encontrou nenhum item associado ao pagamento
+        #antes de fazer qq alteracao em banco cancela
+        if not pagamento_tem_algum_item:
+            return Pagamento.CANCELAR_PAGAMENTO_ERRO_NENHUM_ITEM
+
+        #depois de remover as associacoes remove o pagamento
+        pagamento.delete()
+
+        #atualiza ultima vizao do cliente
+        cliente.atualiza_visto_em_agora()
+
+        return Pagamento.CANCELAR_PAGAMENTO_SUCESSO
+
     def __unicode__(self):
         return "%s %s (%s)" % (self.cliente.nome, self.valor, self.forma_pagamento.descricao)
 
