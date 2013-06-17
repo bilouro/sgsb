@@ -1,0 +1,69 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_static %}
+
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}" />{% endblock %}
+
+{% block coltype %}colMS{% endblock %}
+
+{% block bodyclass %}dashboard{% endblock %}
+
+{% block content %}
+<h1>Relatórios</h1>
+    <div id="content-main">
+        <div class="module">
+        <table summary="Relatorios">
+        <caption><span class="section">Operacionais</span></caption>
+            <tr>
+                <th scope="row"><a href="#/cadastro/relatorio/cliente">Relatorio Recebimentos em caixa</a></th>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <th scope="row"><a href="#/cadastro/relatorio/cliente">Relatorio Serviços Prestados/Agendados</a></th>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <th scope="row"><a href="/cadastro/relatorio/cliente">Relatorio Clientes</a></th>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+        </table>
+        </div>
+
+        <div class="module">
+        <table summary="Relatorios">
+        <caption><span class="section">Pendências</span></caption>
+            <tr>
+                <th scope="row"><a href="#/cadastro/relatorio/cliente">Relatorio Pacotes Pendentes</a></th>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <th scope="row"><a href="#/cadastro/relatorio/cliente">Relatorio Pagamentos Pendentes</a></th>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+        </table>
+        </div>
+
+        <div class="module">
+        <table summary="Relatorios">
+        <caption><span class="section">Gerenciais</span></caption>
+            <tr>
+                <th scope="row"><a href="#/cadastro/relatorio/cliente">Relatorio Total Acumulado por serviço/pacote</a></th>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <th scope="row"><a href="/cadastro/relatorio/funcionario">Relatorio Funcionarios</a></th>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+        </table>
+        </div>
+
+</div>
+{% endblock %}
+
+{% block sidebar %}{% endblock %}

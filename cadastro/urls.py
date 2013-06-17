@@ -1,6 +1,7 @@
 # -*- coding: UTF-8 -*-
 from django.conf.urls import *
 from django.contrib.auth.views import login, logout
+from django.views.generic.base import TemplateView
 from cadastro.cbv.cliente_pagamento_cancelar import ClientePagamentoCancelar
 from cadastro.cbv.cliente_pagamento_historico import ClientePagamentoHistorico
 from cadastro.cbv.horariodisponivelfuncionario_gerar import HorarioDisponivelFuncionarioGerar
@@ -30,6 +31,7 @@ urlpatterns = patterns('',
      url(r'^prestacaoservico/pagamento/$', PrestacaoServicoPagamentoList.as_view(), name='prestacao-servico-pagamento-list'),
      url(r'^cliente/(?P<instance_id>\d+)/pagamento/historico$', ClientePagamentoHistorico.as_view(), name='cliente-pagamento-historico'),
      url(r'^cliente/(?P<cliente_id>\d+)/pagamento/(?P<instance_id>\d+)/cancelar$', ClientePagamentoCancelar.as_view(), name='cliente-pagamento-cancelar'),
+     url(r'^relatorios/', TemplateView.as_view(template_name="cadastro/relatorios.html")),
 
 #    (r'^registrar/$', 'core.views.registrar', {}, 'registrar'),
 #    (r'^redefinir/(?P<chave_ativacao>\S+)/$', 'core.views.redefinir'),
