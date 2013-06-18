@@ -21,7 +21,7 @@ usuario: gerente senha: gerente
 - [feito bilouro] cadastro Servicos
 - [feito bilouro] relatorio funcionarios
 - [feito bilouro] cancelar servico
-- [pend] cancelar pagamento
+- [feito bilouro] cancelar pagamento
 - [feito bilouro] horarios disponiveis
 - [feito bilouro] gerar agenda(horario) para determinado mês para todos os funcionarios
 
@@ -36,11 +36,11 @@ usuario: secretaria senha: secretaria
 - [feito bilouro] desrealizar servico
 - [feito bilouro] novo servico/novo pacote
 - [feito bilouro] realizar pagamento
-- [pend] historico de pagamentos efetuados
+- [feito bilouro] historico de pagamentos efetuados
 - [pend] relatorio servicos prestados/agendados
 - [pend] relatorio recebimentos
 - [carla fazendo] relatorio clientes
-- [pend] relatorio pacotes pendentes
+- [feito bilouro] relatorio pacotes pendentes
 
 == OUTROS ITENS A FAZER ==
 - [meninas fazendo] atualizar cadastro de funcionarios/clientes pois esta com campos em branco
