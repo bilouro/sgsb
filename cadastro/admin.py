@@ -13,7 +13,7 @@ from cadastro.models import *
 class ClienteAdmin(admin.ModelAdmin):
     fieldsets = (
         ('Dados Pessoais', {
-            'fields': (('nome', 'data_nascimento'), ('cpf', 'identidade', 'orgao_expedidor'), ('telefone', 'email'), ('logradouro', 'numero'), ('complemento', 'bairro'), ('cidade', 'estado', 'cep'))
+            'fields': (('nome', 'data_nascimento'), ('cpf', 'identidade', 'orgao_expedidor'), ('telefone', 'email'), ('logradouro', 'numero'), ('complemento', 'bairro'), ('cidade', 'estado', 'cep'), ('status', 'data_cadastro', 'visto_em'))
         }),
     )
     list_display = ('nome', 'telefone', 'email', 'data_nascimento', 'data_cadastro', 'status')
@@ -57,7 +57,7 @@ class EspecialidadeFuncionarioInline(admin.TabularInline):
 class FuncionarioAdmin(admin.ModelAdmin):
     fieldsets = (
         ('Dados Pessoais', {
-            'fields': (('nome', 'data_nascimento'), ('cpf', 'identidade', 'orgao_expedidor'), ('telefone', 'email'), ('logradouro', 'numero'), ('complemento', 'bairro'), ('cidade', 'estado', 'cep'))
+            'fields': (('nome', 'data_nascimento'), ('cpf', 'identidade', 'orgao_expedidor'), ('telefone', 'email'), ('logradouro', 'numero'), ('complemento', 'bairro'), ('cidade', 'estado', 'cep'), ('data_admissao', 'status', 'cargo'))
         }),
     )
     list_display = ('nome', 'telefone', 'email', 'data_admissao', 'status', 'cargo')

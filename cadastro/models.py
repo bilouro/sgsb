@@ -98,9 +98,9 @@ class Cliente(Pessoa):
         verbose_name_plural = 'Clientes'
         ordering = ["nome"]
 
-    data_cadastro = models.DateTimeField()
+    data_cadastro = models.DateTimeField(default=timezone.datetime.now())
     status = models.ForeignKey(StatusCliente)
-    visto_em = models.DateTimeField()
+    visto_em = models.DateTimeField(default=timezone.datetime.now())
 
     def atualiza_visto_em_agora(self):
         self.visto_em = timezone.datetime.now()
