@@ -52,9 +52,6 @@ class PrestacaoServicoPagamentoList(FormView):
         #adiciona o cliente o servico e o id da prestacao
         context['pss_list']=pss_list
         context['psc_list']=psc_list
-        #seleciona todas com INIT
-        context['pss_selected_list']=pss_list
-        context['psc_selected_list']=psc_list
 
         return context
 
