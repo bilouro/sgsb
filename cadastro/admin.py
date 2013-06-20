@@ -8,6 +8,7 @@ from django.contrib.sessions.models import Session
 from django.db.models import Q
 from cadastro.models import *
 #from cadastro.models import Cliente, Funcionario, UserProfile
+from django.utils.html import clean_html
 
 
 class ClienteAdmin(admin.ModelAdmin):
@@ -242,6 +243,14 @@ class PrestacaoServicoAdmin(admin.ModelAdmin):
     funcionario.allow_tags = True
     funcionario.short_description = u'Funcionario'
 
+    def custom_cliente(self, obj):
+        return clean_html("<a href='#'>%s</a>" % obj.cliente)
+
+    custom_cliente.allow_tags = True
+    custom_cliente.short_description = u'Cliente'
+    custom_cliente.admin_order_field = 'cliente'
+
+
     def data_hora(self, obj):
         return "(nenhum)" if obj.horario is None else "%s %s" % (obj.horario.data.strftime("%d/%m/%Y"), obj.horario.hora.hora.strftime('%H:%M'))
 
@@ -265,7 +274,7 @@ class PrestacaoServicoAdmin(admin.ModelAdmin):
     acoes.allow_tags = True
     acoes.short_description = u'Acoes'
 
-    list_display = ('cliente', 'servico_pacote', 'status', 'data_hora', 'funcionario', 'pago', 'acoes')
+    list_display = ('custom_cliente', 'servico_pacote', 'status', 'data_hora', 'funcionario', 'pago', 'acoes')
 
     search_fields = []#'horario__funcionario__nome',]#'cliente__nome', 'pacoteServico_cliente__cliente__nome']
     #ordering = ('-dia',)
