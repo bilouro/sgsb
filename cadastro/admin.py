@@ -18,7 +18,7 @@ class ClienteAdmin(admin.ModelAdmin):
         }),
     )
     list_display = ('nome', 'telefone', 'email', 'data_nascimento', 'data_cadastro', 'status')
-    date_hierarchy = 'data_cadastro'
+    date_hierarchy = 'visto_em'
     search_fields = ['nome', 'logradouro', 'telefone', 'email', 'cpf', 'identidade', 'orgao_expedidor', ] #,'turma__nome', 'palavras_chave']
     #ordering = ('-dia',)
     list_filter = ['status',]
