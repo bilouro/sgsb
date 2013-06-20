@@ -13,42 +13,54 @@
         <div class="module">
         <table summary="Manutencao do Sistema">
         <caption><span class="section">Cadastros</span></caption>
+            {% if 'cadastro.change_cargo' in user.get_all_permissions or user.is_superuser%}
             <tr>
                 <th scope="row"><a href="/admin/cadastro/cargo/">Cadastro de Cargos</a></th>
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
             </tr>
+            {% endif %}
+            {% if 'cadastro.change_especialidade' in user.get_all_permissions or user.is_superuser%}
             <tr>
                 <th scope="row"><a href="/admin/cadastro/especialidade/">Cadastro de Especialidades</a></th>
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
             </tr>
+            {% endif %}
+            {% if 'cadastro.change_formapagamento' in user.get_all_permissions or user.is_superuser%}
             <tr>
                 <th scope="row"><a href="/admin/cadastro/formapagamento/">Cadastro de Formas de Pagamento</a></th>
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
             </tr>
+            {% endif %}
+            {% if 'cadastro.change_servico' in user.get_all_permissions or user.is_superuser%}
             <tr>
                 <th scope="row"><a href="/admin/cadastro/servico/">Cadastro de Serviços</a></th>
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
             </tr>
+            {% endif %}
+            {% if 'cadastro.change_pacoteservico' in user.get_all_permissions or user.is_superuser%}
             <tr>
                 <th scope="row"><a href="/admin/cadastro/pacoteservico/">Cadastro de Pacotes de Serviços</a></th>
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
             </tr>
+            {% endif %}
         </table>
         </div>
-
         <div class="module">
         <table summary="Funcionários">
         <caption><span class="section">Funcionários</span></caption>
+            {% if 'cadastro.change_funcionario' in user.get_all_permissions or user.is_superuser%}
             <tr>
                 <th scope="row"><a href="/admin/cadastro/funcionario/">Cadastro de Funcionários</a></th>
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
             </tr>
+            {% endif %}
+            {% if 'cadastro.change_horariodisponivelfuncionario' in user.get_all_permissions or user.is_superuser%}
             <tr>
                 <th scope="row"><a href="/admin/cadastro/horariodisponivelfuncionario/">Controle de Horarios Funcionarios</a></th>
                 <td>&nbsp;</td>
@@ -59,6 +71,7 @@
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
             </tr>
+            {% endif %}
         </table>
         </div>
 
