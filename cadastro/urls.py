@@ -14,6 +14,7 @@ from cadastro.cbv.prestacaoservico_pagamento import PrestacaoServicoPagamentoLis
 from cadastro.cbv.prestacaoservico_realizar import PrestacaoServicoRealizar
 from cadastro.cbv.relatorioclientes import RelatorioClienteFiltro
 from cadastro.cbv.relatoriopacotependente import RelatorioPacotePendente
+from cadastro.cbv.relatoriorecebimento import RelatorioRecebimento
 from cbv.relatoriofuncionarios import RelatorioFuncionarioFiltro
 
 urlpatterns = patterns('',
@@ -34,6 +35,7 @@ urlpatterns = patterns('',
      url(r'^cliente/(?P<cliente_id>\d+)/pagamento/(?P<instance_id>\d+)/cancelar$', ClientePagamentoCancelar.as_view(), name='cliente-pagamento-cancelar'),
      url(r'^relatorios/', TemplateView.as_view(template_name="cadastro/relatorios.html")),
      url(r'^relatorio/pacotependente$', RelatorioPacotePendente.as_view(), name='relatorio-pacote-pendente'),
+     url(r'^relatorio/recebimento$', RelatorioRecebimento.as_view(), name='relatorio-recebimento'),
 
 #    (r'^registrar/$', 'core.views.registrar', {}, 'registrar'),
 #    (r'^redefinir/(?P<chave_ativacao>\S+)/$', 'core.views.redefinir'),

@@ -38,16 +38,12 @@ usuario: secretaria senha: secretaria
 - [feito bilouro] realizar pagamento
 - [feito bilouro] historico de pagamentos efetuados
 - [pend] relatorio servicos prestados/agendados
-- [pend] relatorio recebimentos
-- [carla fazendo] relatorio clientes
+- [feito bilouro] relatorio recebimentos
+- [feito carla  ] relatorio clientes
 - [feito bilouro] relatorio pacotes pendentes
 
 == OUTROS ITENS A FAZER ==
 - [meninas fazendo] atualizar cadastro de funcionarios/clientes pois esta com campos em branco
-- [meninas fazendo] adicionar todos os estados do brasil (em models.py)
-- [meninas fazendo] melhorar tela de login
-- [meninas fazendo] melhorar menu principal
-- [meninas fazendo] fazer customização dos fields e grids do admin conforme solicitacao professor
-         - (vários na mesma linha -> fiz um exemplo em PESSOA dentro de Admin.py)
-         - dados de rg e cpf para frente (pedido professor)
+- [feito meninas] adicionar todos os estados do brasil (em models.py)
+- [feito meninas] fazer customização dos fields e grids do admin conforme solicitacao professor
 - [pend] permitir selecionar mais de um profissional no agendamento
