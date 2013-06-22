@@ -139,9 +139,9 @@ LOGGING = {
     }
 }
 
-LOGIN_REDIRECT_URL = '/cadastro/'
-LOGIN_URL = '/cadastro/entrar/'
-LOGOUT_URL = '/cadastro/sair/'
+LOGIN_REDIRECT_URL = '/admin/'
+LOGIN_URL = '/admin/'
+LOGOUT_URL = '/admin/'
 
 SERIALIZATION_MODULES = {
     'json': 'wadofstuff.django.serializers.json'
