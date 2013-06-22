@@ -15,7 +15,7 @@ from django.contrib.admin import widgets
 
 class PrestacaoServicoAgendar(FormView):
     class PrestacaoServicoAgendarForm(forms.Form):
-        funcionario = forms.ModelChoiceField(required=True, queryset=Funcionario.objects.all())
+        funcionario = forms.ModelMultipleChoiceField(required=True, queryset=Funcionario.objects.all())
         data = forms.DateField(widget=widgets.AdminDateWidget, required=True, initial=timezone.datetime.today())
         horario = forms.ModelChoiceField(queryset=HorarioDisponivelFuncionario.objects.all(), widget=forms.RadioSelect, required=False)
 
@@ -23,32 +23,34 @@ class PrestacaoServicoAgendar(FormView):
     form_class = PrestacaoServicoAgendarForm
     success_url = '/admin/cadastro/prestacaoservico'
 
-    def prepara_form(self, data, form, funcionario, prestacao_servico):
+    def prepara_form(self, data, form, funcionario_list_param, prestacao_servico):
         #busca a lista de funcionarios com a especialidade do servico escolhido e que estejam habilitados
         funcionario_id_list = EspecialidadeFuncionario.objects.filter(
             especialidade=prestacao_servico.servico_object.especialidade).filter(
             funcionario__status__habilitado=True).values_list('funcionario__id', flat=True)
         funcionario_list = Funcionario.objects.filter(id__in=funcionario_id_list)
 
-        if funcionario is None and len(funcionario_list)==1:
-            funcionario = funcionario_list[0]
+        if len(funcionario_list_param)==0 and len(funcionario_list)>0:
+            funcionario_list_param = funcionario_list
 
-        form.fields['funcionario'] = forms.ModelChoiceField(required=True, queryset=funcionario_list,
-                                                            initial=funcionario)
-        if funcionario is None:
+        form.fields['funcionario'] = forms.ModelMultipleChoiceField(required=True, queryset=funcionario_list,
+                                                            initial=funcionario_list_param)
+        if len(funcionario_list_param)==0:
             qs = HorarioDisponivelFuncionario.objects.get_empty_query_set()
             form.fields['horario'] = forms.ModelChoiceField(queryset=qs, required=True)
 
             messages.add_message(self.request, messages.INFO, 'Selecione um funcionario')
         else:
             qs = HorarioDisponivelFuncionario.objects \
-                .filter(funcionario=funcionario) \
+                .filter(funcionario__in=funcionario_list_param) \
                 .filter(data=data) \
-                .filter(disponivel=True)
+                .filter(disponivel=True) \
+                .order_by('hora__hora')
             form.fields['horario'] = forms.ModelChoiceField(queryset=qs, required=True)
 
-            messages.add_message(self.request, messages.INFO, 'Exibindo dia %s de %s' % (data.strftime("%d/%m/%Y"),
-                                                                                             funcionario.nome))
+            messages.add_message(self.request, messages.INFO,
+                                 'Exibindo dia %s de %s' % (data.strftime("%d/%m/%Y"),
+                                                            ", ".join([f.nome for f in funcionario_list_param])))
 
     def get_context_data(self, **kwargs):
         #busca o id da prestacao passado na url
@@ -64,7 +66,7 @@ class PrestacaoServicoAgendar(FormView):
         servico = prestacao_servico.servico_object
 
         form = kwargs['form']
-        self.prepara_form(form.fields['data'].initial,form, None, prestacao_servico)
+        self.prepara_form(form.fields['data'].initial,form, [], prestacao_servico)
 
         #busca o contexto gerado pela classe superior
         context = super(PrestacaoServicoAgendar, self).get_context_data(**kwargs)
