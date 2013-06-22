@@ -1,4 +1,5 @@
 # -*- coding: UTF-8 -*-
+from datetime import timedelta
 from django.contrib import admin
 
 from django.contrib import admin
@@ -242,6 +243,31 @@ class PrestadorListFilter(SimpleListFilter):
 
         return queryset.filter(horario__funcionario__id=self.value())
 
+class DataListFilter(SimpleListFilter):
+    title = _('data')
+    parameter_name = 'data'
+
+    #uso
+    today=timezone.datetime.today()
+    one_day=timedelta(days=1)
+    week=timedelta(days=7)
+
+    data_options = {
+                    '0':("Ontem",         Q(horario__data=today-one_day)),
+                    '1':("Hoje",          Q(horario__data=today)),
+                    '2':("Amanhã",        Q(horario__data=today+one_day)),
+                    '3':("Próxima Semana",Q(horario__data__gt=today) & Q(horario__data__lte=today+week)),
+                    }
+
+    def lookups(self, request, model_admin):
+        return ( (x,y[0]) for x,y in self.data_options.items() )
+
+    def queryset(self, request, queryset):
+        if self.value() is None:
+            return queryset
+
+        return queryset.filter( self.data_options[self.value()][1] )
+
 class PrestacaoServicoAdmin(admin.ModelAdmin):
     def __init__(self, model, admin_site):
         self.usuario = None
@@ -303,7 +329,7 @@ class PrestacaoServicoAdmin(admin.ModelAdmin):
     search_fields = []#'horario__funcionario__nome',]#'cliente__nome', 'pacoteServico_cliente__cliente__nome']
     #ordering = ('-dia',)
     #date_hierarchy = 'horario'
-    list_filter = ['status', PagoListFilter, TipoPrestacaoServicoListFilter, ClientesListFilter, PrestadorListFilter]
+    list_filter = ['status', PagoListFilter, TipoPrestacaoServicoListFilter, ClientesListFilter, PrestadorListFilter, DataListFilter]
 
     def queryset(self, request):
         qs = super(PrestacaoServicoAdmin, self).queryset(request)
