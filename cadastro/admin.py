@@ -230,6 +230,8 @@ class TipoPrestacaoServicoListFilter(SimpleListFilter):
         return queryset.filter(discriminator=self.value())
 
 class PrestacaoServicoAdmin(admin.ModelAdmin):
+    usuario = None
+
     def servico_pacote(self, obj):
         return "%s (%s)" % (obj.servico_prestado , obj.pacote_servico)
 
@@ -250,6 +252,13 @@ class PrestacaoServicoAdmin(admin.ModelAdmin):
     custom_cliente.short_description = u'Cliente'
     custom_cliente.admin_order_field = 'cliente'
 
+    def get_model_perms(self, request):
+        """
+        SOBRE-ESCRITO PARA BUSCAR O USUARIO DA SESSAO
+        """
+        global usuario
+        usuario = request.user
+        return super(PrestacaoServicoAdmin, self).get_model_perms(request)
 
     def data_hora(self, obj):
         return "(nenhum)" if obj.horario is None else "%s %s" % (obj.horario.data.strftime("%d/%m/%Y"), obj.horario.hora.hora.strftime('%H:%M'))
@@ -258,14 +267,15 @@ class PrestacaoServicoAdmin(admin.ModelAdmin):
     data_hora.short_description = u'Data e hora'
 
     def acoes(self, obj):
-        cancelar ='<a href="/cadastro/prestacaoservico/%s/cancelar">remover</a>' % obj.id
+        cancelar ='<a href="/cadastro/prestacaoservico/%s/cancelar">remover</a>' % obj.id if usuario.has_perm('cadastro.change_funcionario') else ''
         agendar ='<a href="/cadastro/prestacaoservico/%s/agendar">agendar</a>' % obj.id
         desagendar = '<a href="/cadastro/prestacaoservico/%s/desagendar">cancelar</a>' % obj.id
         realizar = '<a href="/cadastro/prestacaoservico/%s/realizar">realizar</a>' % obj.id
-        desrealizar = '<a href="/cadastro/prestacaoservico/%s/desrealizar">cancelar</a>' % obj.id
+        desrealizar = '<a href="/cadastro/prestacaoservico/%s/desrealizar">cancelar</a>' % obj.id if usuario.has_perm('cadastro.change_funcionario') else ''
+
         workflow = {
-            StatusPrestacaoServico.getStatusPrestacaoServicoInstance(StatusPrestacaoServico.NAO_AGENDADO):" &nbsp; ".join([cancelar,agendar]),
-            StatusPrestacaoServico.getStatusPrestacaoServicoInstance(StatusPrestacaoServico.AGENDADO):" &nbsp; ".join([desagendar,realizar]),
+            StatusPrestacaoServico.getStatusPrestacaoServicoInstance(StatusPrestacaoServico.NAO_AGENDADO):" &nbsp; ".join([agendar,cancelar]),
+            StatusPrestacaoServico.getStatusPrestacaoServicoInstance(StatusPrestacaoServico.AGENDADO):" &nbsp; ".join([realizar, desagendar]),
             StatusPrestacaoServico.getStatusPrestacaoServicoInstance(StatusPrestacaoServico.REALIZADO):" &nbsp; ".join([desrealizar,]),
             StatusPrestacaoServico.getStatusPrestacaoServicoInstance(StatusPrestacaoServico.CANCELADO):"",
          }
