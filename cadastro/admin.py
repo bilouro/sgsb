@@ -229,6 +229,19 @@ class TipoPrestacaoServicoListFilter(SimpleListFilter):
 
         return queryset.filter(discriminator=self.value())
 
+class PrestadorListFilter(SimpleListFilter):
+    title = _('prestador')
+    parameter_name = 'prestador'
+    def lookups(self, request, model_admin):
+        prestador_list = Funcionario.objects.filter( id__in = EspecialidadeFuncionario.objects.all().values_list('funcionario__id', flat=True).distinct())
+        return ( (c.id , c.nome) for c in prestador_list )
+
+    def queryset(self, request, queryset):
+        if self.value() is None:
+            return queryset
+
+        return queryset.filter(horario__funcionario__id=self.value())
+
 class PrestacaoServicoAdmin(admin.ModelAdmin):
     def __init__(self, model, admin_site):
         self.usuario = None
@@ -290,7 +303,7 @@ class PrestacaoServicoAdmin(admin.ModelAdmin):
     search_fields = []#'horario__funcionario__nome',]#'cliente__nome', 'pacoteServico_cliente__cliente__nome']
     #ordering = ('-dia',)
     #date_hierarchy = 'horario'
-    list_filter = ['status', PagoListFilter, TipoPrestacaoServicoListFilter, ClientesListFilter ]
+    list_filter = ['status', PagoListFilter, TipoPrestacaoServicoListFilter, ClientesListFilter, PrestadorListFilter]
 
     def queryset(self, request):
         qs = super(PrestacaoServicoAdmin, self).queryset(request)
