@@ -790,6 +790,29 @@ class PrestacaoServico(models.Model):
 
     cliente = property(_get_cliente)
 
+    def _get_valor(self):
+        "Retorna o valor do servico ou o valor rateado do pacote"
+        if self.discriminator == PrestacaoServico.PACOTE:
+            if self.obj_filho is None:
+                self.obj_filho = PrestacaoServicoPacote.objects.get(id=self.id)
+
+            return self.obj_filho.servico_pacoteservico.valor_rateado
+        elif self.discriminator == PrestacaoServico.SERVICO:
+            if self.obj_filho is None:
+                self.obj_filho = PrestacaoServicoServico.objects.get(id=self.id)
+
+            return self.obj_filho.servico.valor
+        else:
+            return None
+
+    valor = property(_get_valor)
+
+    def _get_comissao(self):
+        "Retorna o valor da comissao"
+        return self.valor * ( self.servico_object.comissao / 100)
+
+    comissao = property(_get_comissao)
+
     def __unicode__(self):
         return "[%s] %s"% (self.discriminator, self.status.descricao_curta)
 

@@ -37,7 +37,8 @@ usuario: secretaria senha: secretaria
 - [feito bilouro] novo servico/novo pacote
 - [feito bilouro] realizar pagamento
 - [feito bilouro] historico de pagamentos efetuados
-- [pend] relatorio servicos prestados/agendados
+- [feito bilouro] relatorio comissão funcionarios
+- [pend] relatorio total acumulado por serviço/pacote
 - [feito bilouro] relatorio recebimentos
 - [feito carla  ] relatorio clientes
 - [feito bilouro] relatorio pacotes pendentes

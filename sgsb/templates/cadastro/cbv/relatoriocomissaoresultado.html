@@ -1,0 +1,102 @@
+{% extends "admin/base_clear.html" %}
+{% load i18n %}
+
+{% block extrahead %}
+{{ block.super }}
+<link rel="stylesheet" type="text/css" href="/static/admin/css/widgets.css" media="all">
+
+<script type="text/javascript" src="/admin/jsi18n/"></script>
+<script type="text/javascript" src="/static/admin/js/core.js"></script>
+<script type="text/javascript" src="/static/admin/js/admin/RelatedObjectLookups.js"></script>
+<script type="text/javascript" src="/static/admin/js/jquery.js"></script>
+<script type="text/javascript" src="/static/admin/js/jquery.init.js"></script>
+<script type="text/javascript" src="/static/admin/js/actions.js"></script>
+
+<link rel="stylesheet" type="text/css" href="/static/admin/css/forms.css" />
+<!--[if lte IE 7]><link rel="stylesheet" type="text/css" href="/static/admin/css/ie.css" /><![endif]-->
+<script type="text/javascript">window.__admin_media_prefix__ = "/static/admin/";</script>
+
+{{ form.media }}
+{% endblock %}
+
+
+{% block content %}
+<div id="content" class="colM">
+<h1>Relatorio Comissão de Funcionários</h1>
+<div id="content-main">
+
+{% if imprime_filtro %}
+<h2>Filtro</h2>
+<form action="{% url relatorio-pacote-pendente %}" method="post" target="_self"> {% csrf_token %}
+
+        <fieldset class="module aligned ">
+
+            {% for field in form %}
+                {% if field.name != "imprime_filtro" %}
+                <div class="form-row field-{{ field.name }}">
+                    <div>
+                    {{ field.errors }}
+                    {{ field.label_tag }}: {{ field }}
+                    </div>
+                </div>
+                {% endif %}
+            {% endfor %}
+
+        </fieldset>
+        <script type="text/javascript">
+        (function($) {
+            var field;
+        })(django.jQuery);
+        </script>
+</form>
+{% endif %}
+
+<h2>Resultado</h2>
+
+{% for prestador, p_values in object_list.items %}
+    <h3>{{  prestador  }}</h3>
+    <div class="module filtered" id="changelist">
+    <table id="result_list">
+    <thead>
+    <tr >
+        <th scope="col">Prestador</th>
+        <th scope="col">Data e Hora</th>
+        <th scope="col">Servico</th>
+        <th scope="col">Valor Serviço</th>
+        <th scope="col">Percentual Comissão</th>
+        <th scope="col">Valor Comissão</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for p in p_values.2 %}
+        <tr class="{% cycle row1,row2 %}">
+            <td width="20%">{{ prestador }}</td>
+            <td width="200px">{{ p.horario.data }} {{ p.horario.hora.hora }}</td>
+            <td width="300px">{{ p.servico_prestado }} ({{ p.pacote_servico }})</td>
+            <td width="100px" style="text-align: right">R$ {{ p.valor|floatformat:2 }}</td>
+            <td width="100px" style="text-align: right">{{ p.servico_object.comissao|floatformat:2 }}%</td>
+            <td width="100px" style="text-align: right">R$ {{ p.comissao|floatformat:2 }}</td>
+        </tr>
+    {% endfor %}
+    <tr class="{% cycle row1,row2 %}">
+        <td width="400px" colspan="3" style="text-align: right">Total de <b>{{ prestador }}</b></td>
+        <td width="100px" style="text-align: right">R$ {{ p_values.0|floatformat:2 }}</td>
+        <td width="100px" style="text-align: right">&nbsp;</td>
+        <td width="100px" style="text-align: right">R$ {{ p_values.1|floatformat:2 }}</td>
+    </tr>
+    </tbody>
+    </table>
+    </div>
+    <br/>
+{% endfor %}
+
+<h2>Totais Gerais</h2>
+<h3>Recebidos em Serviços: <span style="color: black; ">R$ {{ valor_geral.0|floatformat:2 }}</span></h3>
+<h3>Pagos em Comissões: <span style="color: black; ">R$ {{ valor_geral.1|floatformat:2 }}</span></h3>
+<br/>
+<small>Emitido em {{now}}h linhas retornadas: {{ object_count }}</small>
+</div>
+</div>
+
+{% endblock %}
+
