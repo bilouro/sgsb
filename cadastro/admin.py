@@ -11,6 +11,7 @@ from cadastro.models import *
 #from cadastro.models import Cliente, Funcionario, UserProfile
 from django.utils.html import clean_html
 
+admin.site.disable_action('delete_selected')
 
 class ClienteAdmin(admin.ModelAdmin):
     fieldsets = (
