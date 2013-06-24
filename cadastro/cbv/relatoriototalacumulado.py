@@ -121,8 +121,8 @@ class RelatorioTotalAcumulado(FormView):
             self.atualiza_share(db, db['Geral'])
 
         db_list = (("Visão Geral",db),
-                   ("Visão por Tipo", db_tipo),
                    ("Visão por Especialidade",db_espec),
+                   ("Visão por Tipo", db_tipo),
                    ("Visão por Serviços",db_servico),
                    ("Visão por Pacotes",db_pacote))
 
