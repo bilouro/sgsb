@@ -1,6 +1,8 @@
 # -*- coding: UTF-8 -*-
 import calendar
 import datetime
+from django.core.exceptions import ValidationError
+from django.core.validators import MaxValueValidator
 from django.db import models
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
@@ -237,10 +239,15 @@ class Servico(models.Model):
     nome = models.CharField(max_length=100)
     descricao = models.TextField()
     valor = models.DecimalField(max_digits=7,decimal_places=2)
-    comissao = models.DecimalField(max_digits=5,decimal_places=2)
+    comissao = models.DecimalField(max_digits=5,decimal_places=2, validators=[MaxValueValidator(100),])
     custo_material = models.DecimalField(max_digits=7,decimal_places=2)
     especialidade = models.ForeignKey(Especialidade)
     habilitado = models.BooleanField()
+
+    def clean(self):
+        custo_maximo = self.valor - ((self.valor * self.comissao) / 100)
+        if self.custo_material > custo_maximo:
+            raise ValidationError("O custo material não pode ser maior que %s (Valor-Comissão)" % custo_maximo)
 
     def __unicode__(self):
         return self.nome
