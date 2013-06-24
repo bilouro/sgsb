@@ -17,6 +17,7 @@ from cadastro.cbv.relatorioclientes import RelatorioClienteFiltro
 from cadastro.cbv.relatoriopacotependente import RelatorioPacotePendente
 from cadastro.cbv.relatoriorcomissao import RelatorioComissao
 from cadastro.cbv.relatoriorecebimento import RelatorioRecebimento
+from cadastro.cbv.relatoriototalacumulado import RelatorioTotalAcumulado
 from cbv.relatoriofuncionarios import RelatorioFuncionarioFiltro
 
 urlpatterns = patterns('',
@@ -39,6 +40,7 @@ urlpatterns = patterns('',
      url(r'^relatorio/pacotependente$', login_required(RelatorioPacotePendente.as_view()), name='relatorio-pacote-pendente'),
      url(r'^relatorio/recebimento$', login_required(RelatorioRecebimento.as_view()), name='relatorio-recebimento'),
      url(r'^relatorio/comissao$', login_required(RelatorioComissao.as_view()), name='relatorio-comissao'),
+     url(r'^relatorio/totalacumulado$', login_required(RelatorioTotalAcumulado.as_view()), name='relatorio-total-acumulado'),
 
 #    (r'^registrar/$', 'core.views.registrar', {}, 'registrar'),
 #    (r'^redefinir/(?P<chave_ativacao>\S+)/$', 'core.views.redefinir'),

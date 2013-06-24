@@ -1,0 +1,98 @@
+{% extends "admin/base_clear.html" %}
+{% load i18n %}
+
+{% block extrahead %}
+{{ block.super }}
+<link rel="stylesheet" type="text/css" href="/static/admin/css/widgets.css" media="all">
+
+<script type="text/javascript" src="/admin/jsi18n/"></script>
+<script type="text/javascript" src="/static/admin/js/core.js"></script>
+<script type="text/javascript" src="/static/admin/js/admin/RelatedObjectLookups.js"></script>
+<script type="text/javascript" src="/static/admin/js/jquery.js"></script>
+<script type="text/javascript" src="/static/admin/js/jquery.init.js"></script>
+<script type="text/javascript" src="/static/admin/js/actions.js"></script>
+
+<link rel="stylesheet" type="text/css" href="/static/admin/css/forms.css" />
+<!--[if lte IE 7]><link rel="stylesheet" type="text/css" href="/static/admin/css/ie.css" /><![endif]-->
+<script type="text/javascript">window.__admin_media_prefix__ = "/static/admin/";</script>
+
+{{ form.media }}
+{% endblock %}
+
+
+{% block content %}
+<div id="content" class="colM">
+<h1>Relatório Total Acumulado por serviço/pacote</h1>
+<div id="content-main">
+
+{% if imprime_filtro %}
+<h2>Filtro</h2>
+<form action="{% url relatorio-pacote-pendente %}" method="post" target="_self"> {% csrf_token %}
+
+        <fieldset class="module aligned ">
+
+            {% for field in form %}
+                {% if field.name != "imprime_filtro" %}
+                <div class="form-row field-{{ field.name }}">
+                    <div>
+                    {{ field.errors }}
+                    {{ field.label_tag }}: {{ field }}
+                    </div>
+                </div>
+                {% endif %}
+            {% endfor %}
+
+        </fieldset>
+        <script type="text/javascript">
+        (function($) {
+            var field;
+        })(django.jQuery);
+        </script>
+</form>
+{% endif %}
+
+<h2>Resultado</h2>
+    {% for db_item in db_list %}
+    <h3>{{ db_item.0 }}</h2>
+
+    <div class="module filtered" id="changelist">
+    <table id="result_list">
+    <thead>
+    <tr >
+        <th scope="col">Visão</th>
+        <th scope="col">Quantidade</th>
+        <th scope="col">Recebido</th>
+        <th scope="col">Custo</th>
+        <th scope="col">Lucro</th>
+        <th scope="col">Share Quantidade</th>
+        <th scope="col">Share Recebido</th>
+        <th scope="col">Share Custo</th>
+        <th scope="col">Share Lucro</th>
+    </tr>
+    </thead>
+    <tbody>
+        {% for key, item in db_item.1.items %}
+            <tr class="{% cycle row1,row2 %}">
+                <td width="30%" >{{ key }}</td>
+                <td width="100px" style="text-align: right">{{ item.qtd_acum }}</td>
+                <td width="100px" style="text-align: right">R$ {{ item.valor_acum|floatformat:2 }}</td>
+                <td width="100px" style="text-align: right">R$ {{ item.custo_acum|floatformat:2 }}</td>
+                <td width="100px" style="text-align: right">R$ {{ item.diferenca_acum|floatformat:2 }}</td>
+                <td width="100px" style="text-align: right">{{ item.qtd_share|floatformat:2 }}%</td>
+                <td width="100px" style="text-align: right">{{ item.valor_share|floatformat:2 }}%</td>
+                <td width="100px" style="text-align: right">{{ item.custo_share|floatformat:2 }}%</td>
+                <td width="100px" style="text-align: right">{{ item.diferenca_share|floatformat:2 }}%</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+    </table>
+    </div>
+    <br/>
+    {% endfor %}
+
+<small>Emitido em {{now}}h linhas retornadas: {{ object_count }}</small>
+</div>
+</div>
+
+{% endblock %}
+
