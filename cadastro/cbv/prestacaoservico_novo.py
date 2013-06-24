@@ -14,8 +14,8 @@ from django.contrib.admin import widgets
 class PrestacaoServicoNovo(FormView):
     class PrestacaoServicoNovoForm(forms.Form):
         cliente = forms.ModelChoiceField(required=True, queryset=Cliente.objects.all())
-        servicos = forms.ModelMultipleChoiceField(queryset=Servico.objects.all() ,required=False, widget=forms.SelectMultiple(attrs={'style':"width: 200px; height: 280px"}))
-        pacote_servicos = forms.ModelMultipleChoiceField(queryset=PacoteServico.objects.all(), required=False, widget=forms.SelectMultiple(attrs={'style':"width: 200px; height: 280px"}))
+        servicos = forms.ModelMultipleChoiceField(queryset=Servico.objects.filter(habilitado=True) ,required=False, widget=forms.SelectMultiple(attrs={'style':"width: 200px; height: 280px"}))
+        pacote_servicos = forms.ModelMultipleChoiceField(queryset=PacoteServico.objects.filter(habilitado=True), required=False, widget=forms.SelectMultiple(attrs={'style':"width: 200px; height: 280px"}))
 
     template_name = 'cadastro/cbv/prestacao_servico_novo.html'
     form_class = PrestacaoServicoNovoForm
