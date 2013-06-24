@@ -16,6 +16,15 @@
 <!--[if lte IE 7]><link rel="stylesheet" type="text/css" href="/static/admin/css/ie.css" /><![endif]-->
 <script type="text/javascript">window.__admin_media_prefix__ = "/static/admin/";</script>
 
+
+<script type="text/javascript">
+(function($) {
+    $(document).ready(function($) {
+        $("tr input.action-select").actions();
+    });
+})(django.jQuery);
+</script>
+
 <script type="text/javascript">
     function check(obj) {
         next_val=0;
@@ -74,7 +83,10 @@
 <table id="result_list">
 <thead>
 <tr >
-    <th scope="col">#</th>
+    <th scope="col">
+   <div class="text"><span><input type="checkbox" id="action-toggle" disabled /></span></div>
+   <div class="clear"></div>
+    </th>
     <th scope="col">Servico</th>
     <th scope="col">Status</th>
     <th scope="col">Data e Hora servico</th>
@@ -85,7 +97,12 @@
 <tbody>
 {% for pss in pss_list %}
 <tr class="{% cycle row1,row2 %}">
-    <td width="10px"><input type="checkbox" name="pss" onclick="check(this)" value="{{ pss.id }}" valor="{{ pss.servico.valor }}" {% if pss in pss_selected_list %}checked{% endif %}/></td>
+    <td width="10px">
+       <div class="text"><span>
+           <input type="checkbox" class="action-select" name="pss" onclick="check(this)" value="{{ pss.id }}" valor="{{ pss.servico.valor }}" {% if pss in pss_selected_list %}checked{% endif %}/>
+       </span></div>
+       <div class="clear"></div>
+    </td>
     <td width="150px">{{ pss.servico }}</td>
     <td width="200px">{{ pss.status }}</td>
     <td width="200px">{{ pss.horario.data}} {{ pss.horario.hora.hora }}</td>
@@ -101,7 +118,7 @@
 <table id="result_list">
 <thead>
 <tr >
-    <th scope="col">#</th>
+    <th scope="col">&nbsp;</th>
     <th scope="col">Pacote</th>
     <th scope="col">Ult. servico</th>
     <th scope="col">Data e Hora Ult. servico</th>
@@ -113,7 +130,14 @@
 <tbody>
 {% for psc in psc_list %}
 <tr class="{% cycle row1,row2 %}">
-    <td width="10px"><input type="checkbox" name="psc" onclick="check(this)" value="{{ psc.id }}" valor="{{ psc.pacote_servico.valor }}" {% if psc in psc_selected_list %}checked{% endif %}/></td>
+
+
+    <td width="10px">
+       <div class="text"><span>
+          <input type="checkbox" class="action-select" name="psc" onclick="check(this)" value="{{ psc.id }}" valor="{{ psc.pacote_servico.valor }}" {% if psc in psc_selected_list %}checked{% endif %}/>
+       </span></div>
+       <div class="clear"></div>
+    </td>
     <td width="150px">{{ psc.pacote_servico }}</td>
     {% if psc.ultimo_servico_realizado %}
         <td width="200px">{{ psc.ultimo_servico_realizado.servico_pacoteservico }}</td>
