@@ -32,8 +32,10 @@ class RelatorioTotalAcumulado(FormView):
         de = forms.DateField(widget=widgets.AdminDateWidget, required=False, initial=primeiro_dia_mes)
         ate = forms.DateField( widget=widgets.AdminDateWidget, required=False, initial=ultimo_dia_mes)
 
-        servicos = forms.ModelMultipleChoiceField(queryset=Servico.objects.all() ,required=False, widget=forms.SelectMultiple(attrs={'style':"width: 100px; height: 100px"}))
-        pacote_servicos = forms.ModelMultipleChoiceField(queryset=PacoteServico.objects.all(), required=False, widget=forms.SelectMultiple(attrs={'style':"width: 100px; height: 100px"}))
+        qs_serv = Servico.objects.all()
+        servicos = forms.ModelMultipleChoiceField(queryset=qs_serv, initial=qs_serv, required=False, widget=forms.SelectMultiple(attrs={'style':"width: 100px; height: 100px"}))
+        qs_pacote = PacoteServico.objects.all()
+        pacote_servicos = forms.ModelMultipleChoiceField(queryset=qs_pacote, initial=qs_pacote, required=False, widget=forms.SelectMultiple(attrs={'style':"width: 100px; height: 100px"}))
 
         imprime_filtro = forms.BooleanField(initial=True, required=False)
 
@@ -82,44 +84,45 @@ class RelatorioTotalAcumulado(FormView):
         db_pacote = {}
 
         #busca todos os servicos SIMPLES
-        qs_pss = PrestacaoServicoServico.objects.filter(pagamento__isnull=False)
         if form.cleaned_data['servicos']:
+            qs_pss = PrestacaoServicoServico.objects.filter(pagamento__isnull=False)
             qs_pss = qs_pss.filter(servico__in=form.cleaned_data['servicos'])
-        qs_pss = self.filtra_de(form.cleaned_data['de'], qs_pss)
-        qs_pss = self.filtra_ate(form.cleaned_data['ate'], qs_pss)
+            qs_pss = self.filtra_de(form.cleaned_data['de'], qs_pss)
+            qs_pss = self.filtra_ate(form.cleaned_data['ate'], qs_pss)
 
-        for pss in qs_pss:
-            custo = pss.servico.custo_material
-            valor = pss.servico.valor
+            for pss in qs_pss:
+                custo = pss.servico.custo_material
+                valor = pss.servico.valor
 
-            self.update(db_tipo, PrestacaoServico.SERVICO, custo, valor)
-            self.update(db_servico, pss.servico, custo, valor)
-            self.update(db_espec, pss.servico.especialidade, custo, valor)
-            self.update(db, 'Geral', custo, valor)
+                self.update(db_tipo, PrestacaoServico.SERVICO, custo, valor)
+                self.update(db_servico, pss.servico, custo, valor)
+                self.update(db_espec, pss.servico.especialidade, custo, valor)
+                self.update(db, 'Geral', custo, valor)
 
         #busca todos os servicos de PACOTE
-        qs_psp = PrestacaoServicoPacote.objects.filter(pacoteServico_cliente__pagamento__isnull=False)
         if form.cleaned_data['pacote_servicos']:
+            qs_psp = PrestacaoServicoPacote.objects.filter(pacoteServico_cliente__pagamento__isnull=False)
             qs_psp = qs_psp.filter(pacoteServico_cliente__pacote_servico__in=form.cleaned_data['pacote_servicos'])
-        qs_psp = self.filtra_de(form.cleaned_data['de'], qs_psp)
-        qs_psp = self.filtra_ate(form.cleaned_data['ate'], qs_psp)
+            qs_psp = self.filtra_de(form.cleaned_data['de'], qs_psp)
+            qs_psp = self.filtra_ate(form.cleaned_data['ate'], qs_psp)
 
-        for psp in qs_psp:
-            custo = psp.servico_pacoteservico.servico.custo_material
-            valor = psp.servico_pacoteservico.valor_rateado
-            
-            self.update(db_tipo, PrestacaoServico.PACOTE, custo, valor)
-            self.update(db_pacote, psp.servico_pacoteservico.servico, custo, valor)
-            self.update(db_espec, psp.servico_pacoteservico.servico.especialidade, custo, valor)
-            self.update(db, 'Geral', custo, valor)
+            for psp in qs_psp:
+                custo = psp.servico_pacoteservico.servico.custo_material
+                valor = psp.servico_pacoteservico.valor_rateado
 
-        if len(qs_pss) >= 0 or len(qs_psp) >= 0:
+                self.update(db_tipo, PrestacaoServico.PACOTE, custo, valor)
+                self.update(db_pacote, psp.servico_pacoteservico.servico, custo, valor)
+                self.update(db_espec, psp.servico_pacoteservico.servico.especialidade, custo, valor)
+                self.update(db, 'Geral', custo, valor)
+
+        if len(db)>0:
             self.atualiza_share(db_tipo, db['Geral'])
             self.atualiza_share(db_espec, db['Geral'])
             self.atualiza_share(db_servico, db['Geral'])
             self.atualiza_share(db_pacote, db['Geral'])
             self.atualiza_share(db, db['Geral'])
 
+        #coloca todos os dbs em lista
         db_list = (("Visão Geral",db),
                    ("Visão por Especialidade",db_espec),
                    ("Visão por Tipo", db_tipo),
@@ -132,7 +135,7 @@ class RelatorioTotalAcumulado(FormView):
             'form': form,
             'now': timezone.datetime.now(),
             'db_list': db_list,
-            'object_count': db['Geral'].qtd_acum,
+            'object_count': safe_list_get(db, 'geral', Item()).qtd_acum,
             'imprime_filtro': form.cleaned_data['imprime_filtro']
         }, context_instance=RequestContext(self.request))
 
