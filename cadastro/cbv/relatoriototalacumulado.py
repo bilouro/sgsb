@@ -91,8 +91,9 @@ class RelatorioTotalAcumulado(FormView):
             qs_pss = self.filtra_ate(form.cleaned_data['ate'], qs_pss)
 
             for pss in qs_pss:
-                custo = pss.servico.custo_material
                 valor = pss.servico.valor
+                comissao = pss.servico.comissao
+                custo = pss.servico.custo_material + valor * (comissao / 100)
 
                 self.update(db_tipo, PrestacaoServico.SERVICO, custo, valor)
                 self.update(db_servico, pss.servico, custo, valor)
@@ -107,8 +108,9 @@ class RelatorioTotalAcumulado(FormView):
             qs_psp = self.filtra_ate(form.cleaned_data['ate'], qs_psp)
 
             for psp in qs_psp:
-                custo = psp.servico_pacoteservico.servico.custo_material
                 valor = psp.servico_pacoteservico.valor_rateado
+                comissao = psp.servico_pacoteservico.servico.comissao
+                custo = psp.servico_pacoteservico.servico.custo_material + valor * (comissao / 100)
 
                 self.update(db_tipo, PrestacaoServico.PACOTE, custo, valor)
                 self.update(db_pacote, psp.servico_pacoteservico.servico, custo, valor)
