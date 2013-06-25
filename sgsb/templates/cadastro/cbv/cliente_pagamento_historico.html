@@ -67,7 +67,13 @@
     <td width="100px" style="text-align: right">R$ {{ obj.valor|floatformat:2 }}</td>
     <td width="50%" >{{ obj.itens_pagos }}</td>
     <td width="100px" >{{ obj.recepcionista }}</td>
-    <td width="100px" style="text-align: center"><a href="{% url cliente-pagamento-cancelar form.cliente.value obj.id %}">Cancelar</a></td>
+    <td width="100px" style="text-align: center">
+        {% if 'cadastro.change_servico' in user.get_all_permissions or user.is_superuser%}
+            <a href="{% url cliente-pagamento-cancelar form.cliente.value obj.id %}">Cancelar</a>
+        {% else %}
+            &nbsp;
+        {% endif %}
+    </td>
 </tr>
 {% endfor %}
 </tbody>
