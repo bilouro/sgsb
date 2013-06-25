@@ -17,6 +17,7 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
+    (r'^$', 'cadastro.views.inicial'),
 
     # deve ficar no final para que as personalizacoes
     # por aplicacao sejao prioritarias

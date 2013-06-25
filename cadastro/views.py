@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from django.shortcuts import get_object_or_404, render_to_response
+from django.shortcuts import get_object_or_404, render_to_response, redirect
 from django.contrib.auth.decorators import login_required
 
 #from django import forms
@@ -29,3 +29,7 @@ from cadastro.models import *
 @login_required
 def index(request):
     return render_to_response('index.html', {'user':request.user})
+
+
+def inicial(request):
+    return redirect(settings.LOGIN_REDIRECT_URL)
