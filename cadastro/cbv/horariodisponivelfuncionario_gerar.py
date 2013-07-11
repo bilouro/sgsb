@@ -48,7 +48,10 @@ class HorarioDisponivelFuncionarioGerar(FormView):
             mes_list=cleaned_data['meses']
             for mes_str in mes_list:
                 mes = int(mes_str)
-                if HorarioDisponivelFuncionario.objects.filter(data__year=ano).filter(data__month=mes).filter(funcionario__in=cleaned_data['funcionarios']).count() > 0:
+                hdf = HorarioDisponivelFuncionario.objects.filter(data__year=ano).filter(data__month=mes)
+                if cleaned_data.get('funcionarios', None):
+                    hdf = hdf.filter(funcionario__in=cleaned_data['funcionarios'])
+                if hdf.count() > 0:
                     raise forms.ValidationError("Ja existe horario gerado para a combinacao mes/ano/funcionario.")
 
             return cleaned_data
