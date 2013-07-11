@@ -20,7 +20,7 @@ class RelatorioPacotePendente(FormView):
         pacotes = forms.ModelMultipleChoiceField(queryset=PacoteServico.objects.all(), required=False)
 
         tipo_relatorio = forms.ChoiceField(choices=TIPO_RELATORIO, widget=forms.RadioSelect(), initial='10-')
-        imprime_filtro = forms.BooleanField(initial=True, required=False)
+        imprime_filtro = forms.BooleanField(initial=False, required=False)
 
     template_name = 'cadastro/cbv/relatoriopacotependentefiltro.html'
     form_class = BuscaForm

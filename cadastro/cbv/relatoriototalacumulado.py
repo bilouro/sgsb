@@ -37,7 +37,7 @@ class RelatorioTotalAcumulado(FormView):
         qs_pacote = PacoteServico.objects.all()
         pacote_servicos = forms.ModelMultipleChoiceField(queryset=qs_pacote, initial=qs_pacote, required=False, widget=forms.SelectMultiple(attrs={'style':"width: 100px; height: 100px"}))
 
-        imprime_filtro = forms.BooleanField(initial=True, required=False)
+        imprime_filtro = forms.BooleanField(initial=False, required=False)
 
 
     template_name = 'cadastro/cbv/relatoriototalacumuladofiltro.html'

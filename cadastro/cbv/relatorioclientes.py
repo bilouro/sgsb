@@ -44,7 +44,7 @@ class RelatorioClienteFiltro(FormView):
         aniversaria_em = forms.MultipleChoiceField(required=False, choices=MESES_DO_ANO)
         status = forms.ModelMultipleChoiceField(queryset=StatusCliente.objects.all(), initial=[1,])
         ultimo_contato_a_mais_de = forms.ChoiceField(required=False, choices=ULTIMO_CONTATO)
-        imprime_filtro = forms.BooleanField(initial=True, required=False)
+        imprime_filtro = forms.BooleanField(initial=False, required=False)
 
     template_name = 'cadastro/cbv/relatorioclientesfiltro.html'
     form_class = BuscaForm

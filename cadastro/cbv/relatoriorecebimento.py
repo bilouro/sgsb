@@ -19,7 +19,7 @@ class RelatorioRecebimento(FormView):
         forma_pagamento = forms.ModelMultipleChoiceField(queryset=FormaPagamento.objects.all(), required=False)
         valor_maior_que = forms.DecimalField( max_digits=7, decimal_places=2, required=False )
         valor_menor_que = forms.DecimalField( max_digits=7, decimal_places=2, required=False )
-        imprime_filtro = forms.BooleanField(initial=True, required=False)
+        imprime_filtro = forms.BooleanField(initial=False, required=False)
 
     template_name = 'cadastro/cbv/relatoriorecebimentofiltro.html'
     form_class = BuscaForm

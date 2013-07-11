@@ -31,7 +31,7 @@ class RelatorioFuncionarioFiltro(FormView):
         status = forms.ModelMultipleChoiceField(queryset=StatusFuncionario.objects.all(), initial=[1,])
         cargo_list = Cargo.objects.all()
         cargo = forms.ModelMultipleChoiceField(queryset=cargo_list, initial=cargo_list)
-        imprime_filtro = forms.BooleanField(initial=True, required=False)
+        imprime_filtro = forms.BooleanField(initial=False, required=False)
 
     template_name = 'cadastro/cbv/relatoriofuncionariosfiltro.html'
     form_class = BuscaForm

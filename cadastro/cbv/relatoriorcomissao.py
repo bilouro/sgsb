@@ -20,7 +20,7 @@ class RelatorioComissao(FormView):
         prestadores = forms.ModelMultipleChoiceField(queryset=prestador_list, required=False)
         de = forms.DateField(widget=widgets.AdminDateWidget, required=False, initial=primeiro_dia_mes)
         ate = forms.DateField( widget=widgets.AdminDateWidget, required=False, initial=ultimo_dia_mes)
-        imprime_filtro = forms.BooleanField(initial=True, required=False)
+        imprime_filtro = forms.BooleanField(initial=False, required=False)
 
     template_name = 'cadastro/cbv/relatoriocomissaofiltro.html'
     form_class = BuscaForm
