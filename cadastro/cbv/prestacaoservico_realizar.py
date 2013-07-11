@@ -28,6 +28,8 @@ class PrestacaoServicoRealizar(View):
             messages.add_message(request, messages.SUCCESS, 'Realizado com sucesso!')
         elif ret_code == PrestacaoServico.REALIZAR_ERRO_PRESTACAO:
             messages.add_message(request, messages.ERROR, 'Para realizar o servico ele deve estar com o status %s.' % StatusPrestacaoServico.getStatusPrestacaoServicoInstance(StatusPrestacaoServico.AGENDADO))
+        elif ret_code == PrestacaoServico.REALIZAR_ERRO_FUNCIONARIO:
+            messages.add_message(request, messages.ERROR, 'O funcionário não está habilitado.')
         else:
             messages.add_message(messages.ERROR, 'Ops, algo errado aconteceu...')
 

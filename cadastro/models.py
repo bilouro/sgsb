@@ -557,6 +557,7 @@ class PrestacaoServico(models.Model):
     AGENDAR_SUCESSO=0
     AGENDAR_ERRO_HORARIO=1
     AGENDAR_ERRO_PRESTACAO=2
+    AGENDAR_ERRO_FUNCIONARIO=3
     @staticmethod
     def agendar(horario_funcionario, prestacao_servico):
         """
@@ -567,9 +568,13 @@ class PrestacaoServico(models.Model):
             AGENDAR_SUCESSO=0
             AGENDAR_ERRO_HORARIO=1 -> se o horario nao estiver disponivel
             AGENDAR_ERRO_PRESTACAO=2 -> se a prestacao nao estiver no status NAO_AGENDADA
+            AGENDAR_ERRO_FUNCIONARIO=3 -> se o funcionario nao tiver habilitado
         """
-        if not get_object_or_404(HorarioDisponivelFuncionario, id=horario_funcionario.id).disponivel:
+        hdf = get_object_or_404(HorarioDisponivelFuncionario, id=horario_funcionario.id)
+        if not hdf.disponivel:
             return PrestacaoServico.AGENDAR_ERRO_HORARIO
+        if not hdf.funcionario.status.habilitado:
+            return PrestacaoServico.AGENDAR_ERRO_FUNCIONARIO
         if not PrestacaoServico.objects.select_related('status').get(id=prestacao_servico.id).status.descricao_curta == StatusPrestacaoServico.NAO_AGENDADO:
             return PrestacaoServico.AGENDAR_ERRO_PRESTACAO
 
@@ -620,6 +625,7 @@ class PrestacaoServico(models.Model):
 
     REALIZAR_SUCESSO=0
     REALIZAR_ERRO_PRESTACAO=1
+    REALIZAR_ERRO_FUNCIONARIO=2
     @staticmethod
     def realizar(prestacao_servico):
         """
@@ -627,11 +633,14 @@ class PrestacaoServico(models.Model):
         Muda o status de AGENDADO para REALIZADO
         RETURN_CODES:
             REALIZAR_SUCESSO=0
-            REALIZAR_ERRO_PRESTACAO=2 -> se a prestacao nao estiver no status AGENDADA
+            REALIZAR_ERRO_PRESTACAO=1 -> se a prestacao nao estiver no status AGENDADA
+            REALIZAR_ERRO_FUNCIONARIO=1 -> se o funcionario nao tiver habilitado
         """
         prestacao_servico_of_db= PrestacaoServico.objects.select_related('status').get(id=prestacao_servico.id)
         if not prestacao_servico_of_db.status.descricao_curta == StatusPrestacaoServico.AGENDADO:
             return PrestacaoServico.REALIZAR_ERRO_PRESTACAO
+        if not prestacao_servico_of_db.horario.funcionario.status.habilitado:
+            return PrestacaoServico.REALIZAR_ERRO_FUNCIONARIO
 
         prestacao_servico.status = StatusPrestacaoServico.getStatusPrestacaoServicoInstance(
             StatusPrestacaoServico.REALIZADO)

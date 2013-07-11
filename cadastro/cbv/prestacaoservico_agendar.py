@@ -111,6 +111,8 @@ class PrestacaoServicoAgendar(FormView):
                 messages.add_message(self.request, messages.SUCCESS, 'Agendado com %s dia %s as %s' % (horario_funcionario.funcionario, horario_funcionario.data.strftime("%d/%m/%Y"), horario_funcionario.hora.hora.strftime('%H:%M')))
             elif ret_code == PrestacaoServico.AGENDAR_ERRO_HORARIO:
                 messages.add_message(self.request, messages.ERROR, 'O horario: "%s" nao esta mais disponivel.' % horario_funcionario)
+            elif ret_code == PrestacaoServico.AGENDAR_ERRO_FUNCIONARIO:
+                messages.add_message(self.request, messages.ERROR, 'O funcionário não está habilitado.')
             elif ret_code == PrestacaoServico.AGENDAR_ERRO_PRESTACAO:
                 messages.add_message(self.request, messages.ERROR, 'Para agendar o servico ele deve estar com o status %s.' % StatusPrestacaoServico.getStatusPrestacaoServicoInstance(StatusPrestacaoServico.NAO_AGENDADO))
             else:
