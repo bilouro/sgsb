@@ -61,7 +61,7 @@ class Pessoa(models.Model):
     cidade = models.CharField(max_length=80, null=True, blank=True)
     estado = models.CharField(max_length=2, null=True, blank=True, choices=ESTADOS)
     cep = models.CharField(max_length=9, null=True, blank=True)
-    telefone = models.CharField(max_length=150, null=True, blank=True)
+    telefone = models.CharField(max_length=150)
     email = models.EmailField(null=True, blank=True)
     cpf = models.CharField(max_length=15, null=True, blank=True)
     identidade = models.CharField(max_length=20, null=True, blank=True)
