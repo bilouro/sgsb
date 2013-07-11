@@ -35,7 +35,7 @@ class HorarioDisponivelFuncionarioGerar(FormView):
         GERAR_ANOS =  ( (timezone.datetime.today().year+y, str(timezone.datetime.today().year+y)) for y in range(2) )
         meses = forms.MultipleChoiceField(required=True, choices=GERAR_MESES, initial=[timezone.datetime.today().month+1])
         ano = forms.ChoiceField(required=True, choices=GERAR_ANOS, initial=timezone.datetime.today().year)
-        func_list = Funcionario.objects.filter( id__in = EspecialidadeFuncionario.objects.all().values_list('funcionario__id', flat=True).distinct())
+        func_list = Funcionario.objects.filter( id__in = EspecialidadeFuncionario.objects.filter(funcionario__status__habilitado=True).values_list('funcionario__id', flat=True).distinct())
         funcionarios = forms.ModelMultipleChoiceField(
             queryset=func_list,
             required=True,
