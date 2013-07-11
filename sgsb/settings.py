@@ -83,9 +83,9 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django.middleware.cache.UpdateCacheMiddleware',
-    'django.middleware.transaction.TransactionMiddleware',
-    'django.middleware.cache.FetchFromCacheMiddleware',)
+    #'django.middleware.cache.UpdateCacheMiddleware',
+    'django.middleware.transaction.TransactionMiddleware',)
+    #'django.middleware.cache.FetchFromCacheMiddleware',)
 
 
 ROOT_URLCONF = 'sgsb.urls'
