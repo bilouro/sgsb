@@ -101,7 +101,7 @@ class Cliente(Pessoa):
         ordering = ["nome"]
 
     data_cadastro = models.DateTimeField(default=timezone.datetime.now())
-    status = models.ForeignKey(StatusCliente)
+    status = models.ForeignKey(StatusCliente, default=1)
     visto_em = models.DateTimeField(default=timezone.datetime.now())
 
     def atualiza_visto_em_agora(self):
