@@ -75,7 +75,9 @@
     (function($) {
         var field;
         $("#id_cpf").mask("999.999.999-99");
-        $("#id_data_nascimento").mask("99/99/9999");
+        {% if adminform and add %}
+            $("#id_data_nascimento").mask("99/99/9999");
+        {% endif %}
         $("#id_telefone").mask("(99) 9999-9999");
         $("#id_numero").mask("?999999");
         $("#id_cep").mask("99999-999");

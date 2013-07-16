@@ -73,15 +73,16 @@
 
 <script type="text/javascript">
     (function($) {
-        var field;
+        {% if adminform and add %}
+            $("#id_data_nascimento").mask("99/99/9999");
+            $("#id_dependentefuncionario_set-0-data_nascimento").mask("99/99/9999");
+        {% endif %}
         $("#id_cpf").mask("999.999.999-99");
-        $("#id_data_nascimento").mask("99/99/9999");
         $("#id_telefone").mask("(99) 9999-9999");
         $("#id_numero").mask("?999999");
         $("#id_cep").mask("99999-999");
         $("#id_data_admissao").mask("99/99/9999");
         $("#id_dependentefuncionario_set-0-cpf").mask("999.999.999-99");
-        $("#id_dependentefuncionario_set-0-data_nascimento").mask("99/99/9999");
     })(django.jQuery);
 </script>
 
