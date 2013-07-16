@@ -28,7 +28,7 @@ class PrestacaoServicoDesagendar(View):
             # This code executes inside a transaction.
             ret_code = PrestacaoServico.desagenda(prestacao_servico)
         if ret_code == PrestacaoServico.DESAGENDAR_SUCESSO:
-            messages.add_message(request, messages.SUCCESS, 'Desagendado com sucesso!')
+            messages.add_message(request, messages.SUCCESS, 'O agendamento foi cancelado com sucesso!')
         elif ret_code == PrestacaoServico.DESAGENDAR_ERRO_HORARIO:
             messages.add_message(request, messages.ERROR, 'O horario: "%s" nao esta mais marcado.' % prestacao_servico.horario)
         elif ret_code == PrestacaoServico.DESAGENDAR_ERRO_PRESTACAO:
