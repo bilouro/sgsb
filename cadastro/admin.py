@@ -128,8 +128,11 @@ class ServicosPacoteInline(admin.TabularInline):
     model = ServicoPacoteServico
     #fk_name = 'pacote_servico'
     #exclude = ('endereco', 'telefone', 'email',)
-    extra = 3
+    extra = 6
 class PacoteServicoAdmin(admin.ModelAdmin):
+    class Media:
+        js = ( "/media/javascript/jquery.maskedinput.js", )
+
     list_display = ('nome', 'descricao', 'valor', 'habilitado')
     search_fields = ['nome', 'descricao', 'valor']
     #ordering = ('-dia',)
@@ -137,6 +140,9 @@ class PacoteServicoAdmin(admin.ModelAdmin):
     list_filter = ['habilitado']
 
 class ServicoAdmin(admin.ModelAdmin):
+    class Media:
+        js = ( "/media/javascript/jquery.maskedinput.js", )
+
     list_display = ('nome', 'descricao', 'valor', 'comissao', 'custo_material', 'especialidade', 'habilitado')
     search_fields = ['nome', 'descricao', 'valor', 'comissao', 'custo_material']
     #ordering = ('-dia',)
@@ -160,6 +166,9 @@ class HorarioDisponivelAdmin(admin.ModelAdmin):
     #list_filter = ['pacote_servico',]
 
 class HorarioDisponivelFuncionarioAdmin(admin.ModelAdmin):
+    class Media:
+        js = ( "/media/javascript/jquery.maskedinput.js", )
+
     list_display = ('data', 'hora', 'funcionario', 'disponivel')
     search_fields = ['funcionario__nome']
     #ordering = ('-dia',)
