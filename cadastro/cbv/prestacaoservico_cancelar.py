@@ -27,6 +27,10 @@ class PrestacaoServicoCancelar(View):
         #salvar pois se for pacote sera deletado
         cliente_id = prestacao_servico.cliente_object.id
 
+        if not 'cadastro.change_servico' in request.user.get_all_permissions():
+            messages.add_message(request, messages.ERROR, 'Usuário não tem permissão para realizar operação')
+            return redirect(self.get_success_url()+'?cliente=%s' % cliente_id)
+
         with transaction.commit_on_success():
             # This code executes inside a transaction.
             ret_code = PrestacaoServico.cancelar(prestacao_servico)

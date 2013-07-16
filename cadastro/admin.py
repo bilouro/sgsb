@@ -309,11 +309,11 @@ class PrestacaoServicoAdmin(admin.ModelAdmin):
     data_hora.short_description = u'Data e hora'
 
     def acoes(self, obj):
-        cancelar ='<a href="/cadastro/prestacaoservico/%s/cancelar">remover</a>' % obj.id if self.usuario is not None and self.usuario.has_perm('cadastro.change_funcionario') else ''
+        cancelar ='<a href="/cadastro/prestacaoservico/%s/cancelar">remover</a>' % obj.id
         agendar ='<a href="/cadastro/prestacaoservico/%s/agendar">agendar</a>' % obj.id
         desagendar = '<a href="/cadastro/prestacaoservico/%s/desagendar">cancelar</a>' % obj.id
         realizar = '<a href="/cadastro/prestacaoservico/%s/realizar">realizar</a>' % obj.id
-        desrealizar = '<a href="/cadastro/prestacaoservico/%s/desrealizar">cancelar</a>' % obj.id if self.usuario is not None and self.usuario.has_perm('cadastro.change_funcionario') else ''
+        desrealizar = '<a href="/cadastro/prestacaoservico/%s/desrealizar">cancelar</a>' % obj.id
 
         workflow = {
             StatusPrestacaoServico.getStatusPrestacaoServicoInstance(StatusPrestacaoServico.NAO_AGENDADO):" &nbsp; ".join([agendar,cancelar]),
