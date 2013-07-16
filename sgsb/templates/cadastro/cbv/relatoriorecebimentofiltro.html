@@ -11,6 +11,7 @@
 <script type="text/javascript" src="/static/admin/js/jquery.js"></script>
 <script type="text/javascript" src="/static/admin/js/jquery.init.js"></script>
 <script type="text/javascript" src="/static/admin/js/actions.js"></script>
+<script type="text/javascript" src="/media/javascript/jquery.maskedinput.js"></script>
 
 <link rel="stylesheet" type="text/css" href="/static/admin/css/forms.css" />
 <!--[if lte IE 7]><link rel="stylesheet" type="text/css" href="/static/admin/css/ie.css" /><![endif]-->
@@ -53,9 +54,13 @@
         </div>
 
         <script type="text/javascript">
-        (function($) {
-            var field;
-        })(django.jQuery);
+            (function($) {
+                var field;
+                $("#id_de").mask("99/99/9999");
+                $("#id_ate").mask("99/99/9999");
+                $("#id_valor_maior_que").mask("?9999");
+                $("#id_valor_menor_que").mask("?9999");
+            })(django.jQuery);
         </script>
 
 </form>
