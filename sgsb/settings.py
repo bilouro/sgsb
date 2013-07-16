@@ -139,7 +139,8 @@ LOGGING = {
     }
 }
 
-LOGIN_REDIRECT_URL = '/admin/cadastro/prestacaoservico/?status__id__exact=4'
+#LOGIN_REDIRECT_URL = '/admin/cadastro/prestacaoservico/?status__id__exact=4'
+LOGIN_REDIRECT_URL = '/admin/cadastro/prestacaoservico/?data=1&status__id__exact=4'
 LOGIN_URL = '/admin/'
 #LOGOUT_URL = '/admin/'
 
