@@ -1,0 +1,88 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_static admin_modify %}
+{% load url from future %}
+{% load admin_urls %}
+
+{% block extrahead %}{{ block.super }}
+{% url 'admin:jsi18n' as jsi18nurl %}
+<script type="text/javascript" src="{{ jsi18nurl|default:"../../../jsi18n/" }}"></script>
+{{ media }}
+<script type="text/javascript">
+    function valida_form() {
+        campo = document.getElementById('id_cpf');
+        if(campo.value == '') {
+            return true;
+        }
+        if(!validarCPF(campo.value)) {
+            window.alert("CPF Inválido!");
+            campo.focus();
+            return false;
+        }
+    }
+</script>
+
+{% endblock %}
+
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/forms.css" %}" />{% endblock %}
+
+{% block coltype %}{% if ordered_objects %}colMS{% else %}colM{% endif %}{% endblock %}
+
+{% block bodyclass %}{{ opts.app_label }}-{{ opts.object_name.lower }} change-form{% endblock %}
+
+{% block content %}<div id="content-main">
+{% block object-tools %}
+{% endblock %}
+<form onsubmit="return valida_form()" {% if has_file_field %}enctype="multipart/form-data" {% endif %}action="{{ form_url }}" method="post" id="{{ opts.module_name }}_form">{% csrf_token %}{% block form_top %}{% endblock %}
+<div>
+{% if is_popup %}<input type="hidden" name="_popup" value="1" />{% endif %}
+{% if save_on_top %}{% block submit_buttons_top %}{% submit_row %}{% endblock %}{% endif %}
+{% if errors %}
+    <p class="errornote">
+    {% blocktrans count counter=errors|length %}Please correct the error below.{% plural %}Please correct the errors below.{% endblocktrans %}
+    </p>
+    {{ adminform.form.non_field_errors }}
+{% endif %}
+
+{% block field_sets %}
+{% for fieldset in adminform %}
+  {% include "admin/includes/fieldset.html" %}
+{% endfor %}
+{% endblock %}
+
+{% block after_field_sets %}{% endblock %}
+
+{% block inline_field_sets %}
+{% for inline_admin_formset in inline_admin_formsets %}
+    {% include inline_admin_formset.opts.template %}
+{% endfor %}
+{% endblock %}
+
+{% block after_related_objects %}{% endblock %}
+
+{% block submit_buttons_bottom %}{% submit_row %}{% endblock %}
+
+{% if adminform and add %}
+   <script type="text/javascript">document.getElementById("{{ adminform.first_field.id_for_label }}").focus();</script>
+{% endif %}
+
+{# JavaScript for prepopulated fields #}
+{% prepopulated_fields_js %}
+
+</div>
+</form></div>
+
+<script type="text/javascript">
+    (function($) {
+        var field;
+        $("#id_cpf").mask("999.999.999-99");
+        $("#id_data_nascimento").mask("99/99/9999");
+        $("#id_telefone").mask("(99) 9999-9999");
+        $("#id_numero").mask("?999999");
+        $("#id_cep").mask("99999-999");
+        $("#id_data_admissao").mask("99/99/9999");
+        $("#id_dependentefuncionario_set-0-cpf").mask("999.999.999-99");
+        $("#id_dependentefuncionario_set-0-data_nascimento").mask("99/99/9999");
+    })(django.jQuery);
+</script>
+
+{% endblock %}

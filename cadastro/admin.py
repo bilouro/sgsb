@@ -14,6 +14,9 @@ from django.utils.html import clean_html
 admin.site.disable_action('delete_selected')
 
 class ClienteAdmin(admin.ModelAdmin):
+    class Media:
+        js = ("/media/javascript/cpf.js", "/media/javascript/jquery.maskedinput.js" )
+
     fieldsets = (
         ('Dados Pessoais', {
             'fields': (('nome', 'data_nascimento'), ('cpf', 'identidade', 'orgao_expedidor'), ('telefone', 'email'), ('logradouro', 'numero'), ('complemento', 'bairro'), ('cidade', 'estado', 'cep'), ('status', 'data_cadastro', 'visto_em'))
@@ -53,11 +56,14 @@ class DependenteFuncionarioInline(admin.TabularInline):
     model = DependenteFuncionario
     fk_name = 'funcionario'
     exclude = ('logradouro', 'numero','complemento', 'bairro','cidade', 'estado', 'cep', 'telefone', 'email',)
-    extra = 0
+    extra = 1
 class EspecialidadeFuncionarioInline(admin.TabularInline):
     model = EspecialidadeFuncionario
     extra = 1
 class FuncionarioAdmin(admin.ModelAdmin):
+    class Media:
+        js = ("/media/javascript/cpf.js", "/media/javascript/jquery.maskedinput.js" )
+
     fieldsets = (
         ('Dados Pessoais', {
             'fields': (('nome', 'data_nascimento'), ('cpf', 'identidade', 'orgao_expedidor'), ('telefone', 'email'), ('logradouro', 'numero'), ('complemento', 'bairro'), ('cidade', 'estado', 'cep'), ('data_admissao', 'status', 'cargo'))
